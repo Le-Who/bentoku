@@ -71,10 +71,12 @@ const solveForAnimals = (
   const allCluesPossible = (): boolean =>
     puzzle.clues.every((clue) => clueCouldMatch(board, clue, pieceMap));
 
+  const candidateCache = Array.from({ length: 9 }, (_, position) =>
+    availablePieces.filter((piece) => pieceAllowedAt(piece, position, descriptors)),
+  );
+
   const candidatesFor = (position: number): BentoPiece[] =>
-    availablePieces.filter(
-      (piece) => !used.has(piece.id) && pieceAllowedAt(piece, position, descriptors),
-    );
+    candidateCache[position]!.filter((piece) => !used.has(piece.id));
 
   const search = (depth: number): void => {
     if (count >= limit) return;
