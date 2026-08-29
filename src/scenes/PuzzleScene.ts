@@ -36,6 +36,7 @@ interface ButtonSpec {
   primary?: boolean;
   icon?: boolean;
   sound?: SoundName | false;
+  title?: string;
 }
 
 interface PiecePress {
@@ -176,8 +177,14 @@ export class PuzzleScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setInteractive({ useHandCursor: true });
     this.seedText.on('pointerdown', () => void this.copySeed());
-    this.seedText.on('pointerover', () => this.seedText.setColor('#c66f69'));
-    this.seedText.on('pointerout', () => this.seedText.setColor('#74594f'));
+    this.seedText.on('pointerover', () => {
+      this.seedText.setColor('#c66f69');
+      this.game.canvas.title = 'Copy shareable link';
+    });
+    this.seedText.on('pointerout', () => {
+      this.seedText.setColor('#74594f');
+      if (this.game.canvas.title === 'Copy shareable link') this.game.canvas.title = '';
+    });
 
     this.makeButton({
       x: 1034,
@@ -186,6 +193,7 @@ export class PuzzleScene extends Phaser.Scene {
       label: `${this.puzzle.difficulty} ▾`,
       callback: () => this.openDifficultySelect(),
       sound: false,
+      title: 'Select Difficulty',
     });
 
     this.makeButton({
@@ -194,6 +202,7 @@ export class PuzzleScene extends Phaser.Scene {
       width: 110,
       label: 'Daily',
       callback: () => this.startDaily(),
+      title: 'Daily Puzzle',
     });
     this.makeButton({
       x: 1298,
@@ -203,6 +212,7 @@ export class PuzzleScene extends Phaser.Scene {
       callback: () => this.undo(),
       icon: true,
       sound: false,
+      title: 'Undo Move',
     });
     this.makeButton({
       x: 1362,
@@ -212,6 +222,7 @@ export class PuzzleScene extends Phaser.Scene {
       callback: () => this.openHelp(),
       icon: true,
       sound: false,
+      title: 'Help',
     });
     this.makeButton({
       x: 1426,
@@ -221,6 +232,7 @@ export class PuzzleScene extends Phaser.Scene {
       callback: () => this.openSettings(),
       icon: true,
       sound: false,
+      title: 'Settings',
     });
 
     this.moveText = this.add
@@ -578,8 +590,18 @@ export class PuzzleScene extends Phaser.Scene {
       if (spec.sound !== false) this.audio.play(spec.sound ?? 'ui_tap');
       spec.callback();
     });
-    container.on('pointerover', () => container.setScale(1.05));
-    container.on('pointerout', () => container.setScale(1));
+    container.on('pointerover', () => {
+      container.setScale(1.05);
+      if (spec.title && this.game.canvas) {
+        this.game.canvas.title = spec.title;
+      }
+    });
+    container.on('pointerout', () => {
+      container.setScale(1);
+      if (spec.title && this.game.canvas) {
+        this.game.canvas.title = '';
+      }
+    });
     parent?.add(container);
     return container;
   }

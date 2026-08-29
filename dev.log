@@ -1,0 +1,10 @@
+
+> bentoku@1.0.0 dev /app
+> vite --host 0.0.0.0 --port 5174
+
+
+  VITE v8.1.5  ready in 272 ms
+
+  ➜  Local:   http://localhost:5174/
+  ➜  Network: http://192.168.0.2:5174/
+12:50:09 PM [vite] (client) [optimizer] bundling dependencies...
