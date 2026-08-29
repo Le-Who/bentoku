@@ -1,0 +1,3 @@
+## 2024-05-15 - Tooltips in Canvas UI
+**Learning:** Adding native tooltips to elements inside an HTML5 `<canvas>` (like in Phaser games) requires dynamically setting the `title` attribute of the actual canvas element on `pointerover` and clearing it on `pointerout`. Standard `title` attributes on a canvas only apply globally, so simulating individual element tooltips is an effective accessibility trick.
+**Action:** Use hover events on logical objects within the canvas (like buttons or text) to manipulate `this.game.canvas.title` when building canvas-based UIs to provide immediate context for interactive elements.
