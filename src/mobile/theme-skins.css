@@ -1,0 +1,466 @@
+/* Shared materials are supplied as finished artwork. Each theme only changes
+   the material and ink; the game's grid and its touch targets stay intact. */
+@font-face {
+  font-family: 'Bentoku Nunito';
+  src: url('/assets/fonts/Nunito-Variable.ttf') format('truetype');
+  font-weight: 200 1000;
+  font-style: normal;
+  font-display: swap;
+}
+.mobile-shell.is-loading-theme {
+  visibility: hidden;
+}
+.mobile-theme-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+  background: #faf9f2;
+  color: #304536;
+  font:
+    bold 20px 'Trebuchet MS',
+    sans-serif;
+}
+.mobile-theme-loading[hidden] {
+  display: none;
+}
+.mobile-shell[data-theme='picnic'],
+.mobile-dialog[data-theme='picnic'] {
+  --theme-ink: #653d32;
+  --theme-muted: #85655a;
+  --theme-accent: #a84d54;
+  --theme-focus: #804139;
+  --theme-paper: #f8e8d2;
+  --theme-shadow: #633a3540;
+  --theme-background: url('/assets/themes/picnic/background.webp');
+  --theme-board: url('/assets/themes/picnic/board.webp');
+  --theme-panel: url('/assets/themes/picnic/panel.webp');
+  --theme-tray: url('/assets/themes/picnic/tray.webp');
+  --theme-primary: url('/assets/themes/picnic/button-primary.webp');
+  --theme-secondary: url('/assets/themes/picnic/button-secondary.webp');
+  --theme-logo: url('/assets/themes/picnic/logo.webp');
+  --theme-well: url('/assets/themes/picnic/well.webp');
+}
+
+.mobile-shell[data-theme='porcelain'],
+.mobile-dialog[data-theme='porcelain'] {
+  --theme-ink: #304536;
+  --theme-muted: #657c6b;
+  --theme-accent: #5b8064;
+  --theme-focus: #426b4e;
+  --theme-paper: #f6f6ee;
+  --theme-shadow: #425a4838;
+  --theme-background: url('/assets/themes/porcelain/background.webp');
+  --theme-board: url('/assets/themes/porcelain/board.webp');
+  --theme-panel: url('/assets/themes/porcelain/panel.webp');
+  --theme-tray: url('/assets/themes/porcelain/tray.webp');
+  --theme-primary: url('/assets/themes/porcelain/button-primary.webp');
+  --theme-secondary: url('/assets/themes/porcelain/button-secondary.webp');
+  --theme-logo: url('/assets/themes/porcelain/logo.webp');
+  --theme-well: url('/assets/themes/porcelain/well.webp');
+}
+
+.mobile-shell[data-theme='maple'],
+.mobile-dialog[data-theme='maple'] {
+  --theme-ink: #593a29;
+  --theme-muted: #80694f;
+  --theme-accent: #71815c;
+  --theme-focus: #667853;
+  --theme-paper: #f2e4c5;
+  --theme-shadow: #66412b40;
+  --theme-background: url('/assets/themes/maple/background.webp');
+  --theme-board: url('/assets/themes/maple/board.webp');
+  --theme-panel: url('/assets/themes/maple/panel.webp');
+  --theme-tray: url('/assets/themes/maple/tray.webp');
+  --theme-primary: url('/assets/themes/maple/button-primary.webp');
+  --theme-secondary: url('/assets/themes/maple/button-secondary.webp');
+  --theme-logo: url('/assets/themes/maple/logo.webp');
+  --theme-well: url('/assets/themes/maple/well.webp');
+}
+
+.mobile-shell:is([data-theme='picnic'], [data-theme='porcelain'], [data-theme='maple']) {
+  color: var(--theme-ink);
+  background: var(--theme-background) center / cover no-repeat var(--theme-paper);
+  font-family: 'Bentoku Nunito', 'Trebuchet MS', system-ui, sans-serif;
+}
+
+.mobile-shell[data-theme='porcelain'] {
+  font-family: 'Bentoku Nunito', system-ui, sans-serif;
+}
+
+.mobile-shell[data-theme] .mobile-wordmark {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 175px;
+  height: 100%;
+  margin: 0 auto 0 0;
+  overflow: hidden;
+  color: transparent;
+  text-shadow: none;
+  background: var(--theme-logo) left center / contain no-repeat;
+}
+
+.mobile-shell[data-theme] .mobile-level,
+.mobile-shell[data-theme] .mobile-icon-button {
+  color: var(--theme-ink);
+  border: 0;
+  border-radius: 12px;
+  background: var(--theme-secondary) center / 100% 100% no-repeat;
+  box-shadow: none;
+}
+
+.mobile-shell[data-theme] .mobile-level {
+  font-size: 13px !important;
+}
+.mobile-shell[data-theme] .mobile-icon-button {
+  background-image: var(--theme-well);
+}
+
+.mobile-shell[data-theme] .mobile-notes {
+  color: var(--theme-ink);
+  background: var(--theme-panel) center / 100% 100% no-repeat;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 10px 12px 11px;
+}
+
+.mobile-shell[data-theme] .mobile-notes-heading {
+  flex-basis: 25px;
+}
+
+.mobile-shell[data-theme] .mobile-notes-heading h2 {
+  font-size: 16px;
+  letter-spacing: -0.02em;
+}
+
+.mobile-shell[data-theme] .mobile-notes-heading span {
+  color: var(--theme-muted);
+  font-size: 11px;
+}
+
+.mobile-shell[data-theme] .mobile-clue-card {
+  color: var(--theme-ink);
+  border-radius: 4px;
+  background: #fffdf24d;
+}
+
+.mobile-shell[data-theme] .mobile-clue-card.is-map {
+  border-right: 1px solid color-mix(in srgb, var(--theme-ink) 30%, transparent);
+  border-radius: 0;
+  background: transparent;
+}
+
+.mobile-shell[data-theme] .mobile-board-wrap {
+  padding: 0;
+}
+
+/* The board asset has wells at 6–34%, 36–64%, and 66–94%.
+   cqw/cqh here refer to board-wrap so the percentages track the actual square
+   even when height, rather than width, limits the board. */
+.mobile-shell[data-theme] .mobile-board {
+  border: 0;
+  border-radius: 0;
+  padding: min(6cqw, 6cqh);
+  gap: min(2cqw, 2cqh);
+  background: var(--theme-board) center / 100% 100% no-repeat;
+  box-shadow: none;
+}
+
+.mobile-shell[data-theme] .mobile-cell {
+  border: 0;
+  border-radius: 7%;
+  background: transparent;
+  box-shadow: none;
+}
+
+.mobile-shell[data-theme] .mobile-cell::after {
+  content: none;
+}
+
+.mobile-shell[data-theme] .mobile-tray {
+  padding: 8px 10px;
+  gap: 2px 3px;
+  border-radius: 0;
+  background: var(--theme-tray) center / 100% 100% no-repeat;
+}
+
+.mobile-shell[data-theme] .mobile-pocket,
+.mobile-shell[data-theme] .mobile-pocket.is-empty {
+  border: 0;
+  border-radius: 12px;
+  background: var(--theme-well) center / 100% 100% no-repeat;
+  box-shadow: none;
+}
+
+.mobile-shell[data-theme] .mobile-pocket::before,
+.mobile-shell[data-theme] .mobile-pocket::after {
+  content: none;
+}
+
+.mobile-shell[data-theme] .mobile-piece.is-selected {
+  outline: 3px solid var(--theme-focus);
+  outline-offset: -2px;
+  background: #ffffff1a;
+}
+
+.mobile-shell[data-theme] .mobile-piece.is-selected::after {
+  content: none;
+}
+
+.mobile-shell[data-theme] .mobile-cell.is-drop-target {
+  outline: 3px solid var(--theme-focus);
+  outline-offset: -3px;
+  background: #ffffff38;
+}
+
+.mobile-shell[data-theme] .mobile-hint-ghost {
+  background: #fff6c780;
+  outline-color: var(--theme-focus);
+}
+
+.mobile-shell[data-theme] .mobile-toolbar {
+  gap: 8px;
+}
+
+.mobile-shell[data-theme] .mobile-control,
+.mobile-dialog[data-theme] .mobile-control {
+  color: var(--theme-ink);
+  border: 0;
+  border-radius: 12px;
+  background: var(--theme-secondary) center / 100% 100% no-repeat;
+  box-shadow: none;
+}
+
+.mobile-shell[data-theme] .mobile-control.is-primary,
+.mobile-dialog[data-theme] .mobile-control.is-primary {
+  color: var(--theme-ink);
+  background: var(--theme-primary) center / 100% 100% no-repeat;
+}
+
+.mobile-shell[data-theme='maple'] .mobile-control.is-primary,
+.mobile-dialog[data-theme='maple'] .mobile-control.is-primary {
+  color: #fffdf2;
+}
+
+.mobile-shell[data-theme] button:focus-visible,
+.mobile-dialog[data-theme] :focus-visible {
+  outline: 3px solid var(--theme-focus);
+  outline-offset: 2px;
+}
+
+.mobile-dialog[data-theme] {
+  color: var(--theme-ink);
+  border: 0;
+  border-radius: 18px;
+  background: var(--theme-paper);
+  box-shadow: 0 16px 50px var(--theme-shadow);
+  font-family: 'Bentoku Nunito', system-ui, sans-serif;
+  overflow: auto;
+}
+
+.mobile-dialog[data-theme]::backdrop {
+  background: #302a24a6;
+}
+
+.mobile-dialog[data-theme] .mobile-dialog-content {
+  padding: 24px 20px 20px;
+}
+
+.mobile-dialog[data-theme] .mobile-dialog-close {
+  color: var(--theme-ink);
+}
+
+.mobile-dialog[data-theme] .mobile-enlarged-clue {
+  background: var(--theme-panel) center / 100% 100% no-repeat;
+}
+
+.mobile-dialog[data-theme] .mobile-note-position {
+  color: var(--theme-muted);
+}
+
+.mobile-dialog[data-theme] .mobile-slider input {
+  accent-color: var(--theme-accent);
+}
+
+/* The radio remains native and visible; labels remain one large touch target. */
+.mobile-theme-picker {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 4px 0 18px;
+  padding: 0;
+  border: 0;
+}
+
+.mobile-theme-picker legend {
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.mobile-theme-card {
+  display: grid;
+  grid-template-columns: 20px 64px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 68px;
+  padding: 7px 9px;
+  color: inherit;
+  background: #ffffff75;
+  border: 1px solid color-mix(in srgb, var(--theme-ink, #314d70) 20%, transparent);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.mobile-theme-card:has(input:checked) {
+  border-color: var(--theme-focus, #536b8b);
+  box-shadow: inset 0 0 0 2px var(--theme-focus, #536b8b);
+  background: #ffffffb3;
+}
+
+.mobile-theme-card:has(input:focus-visible) {
+  outline: 3px solid var(--theme-focus, #536b8b);
+  outline-offset: 2px;
+}
+
+.mobile-theme-card input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--theme-focus, #536b8b);
+}
+
+.mobile-theme-preview {
+  display: block;
+  width: 64px;
+  height: 50px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 7px;
+  background: var(--theme-paper, #eee5d0);
+}
+
+.mobile-theme-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mobile-theme-name {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.mobile-theme-description {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--theme-muted, #626d73);
+}
+
+@media (max-height: 620px) and (orientation: portrait) {
+  .mobile-shell[data-theme] .mobile-notes {
+    padding: 5px 10px 7px;
+  }
+
+  .mobile-shell[data-theme] .mobile-tray {
+    padding: 5px 8px;
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .mobile-shell[data-theme] .mobile-notes {
+    padding: 5px 9px 7px;
+  }
+
+  .mobile-shell[data-theme] .mobile-notes-heading {
+    flex-basis: 20px;
+  }
+
+  .mobile-shell[data-theme] .mobile-tray {
+    padding: 5px 8px;
+  }
+}
+
+@media (max-width: 320px) {
+  .mobile-theme-card {
+    grid-template-columns: 18px 50px minmax(0, 1fr);
+    gap: 7px;
+  }
+
+  .mobile-theme-preview {
+    width: 50px;
+    height: 44px;
+  }
+}
+
+/* The porcelain reference keeps notes and food rests on an open milk-white table. */
+.mobile-shell[data-theme='porcelain'] .mobile-notes {
+  background: none;
+  padding: 4px 2px 6px;
+}
+.mobile-shell[data-theme='porcelain'] .mobile-clue-card {
+  background: transparent;
+  border-radius: 0;
+}
+.mobile-shell[data-theme='porcelain'] .mobile-spatial-clues {
+  gap: 4px 8px;
+}
+.mobile-shell[data-theme='porcelain'] .mobile-clue-card:not(.is-map) {
+  border-bottom: 1px solid #9daf9c80;
+}
+.mobile-shell[data-theme='porcelain'] .mobile-tray {
+  background: none;
+  padding: 4px 2px;
+}
+.mobile-shell[data-theme='porcelain'] .mobile-pocket {
+  background-size: contain;
+}
+.mobile-shell[data-theme='porcelain'] .mobile-pocket.is-empty {
+  background-size: contain;
+}
+
+/* Quiet writing surfaces keep printed corner motifs outside the clue marks. */
+.mobile-shell[data-theme='picnic'] .mobile-clue-card,
+.mobile-shell[data-theme='picnic'] .mobile-clue-card.is-map {
+  background-color: #fff3dcef;
+}
+.mobile-shell[data-theme='maple'] .mobile-clue-card,
+.mobile-shell[data-theme='maple'] .mobile-clue-card.is-map {
+  background-color: #fff8e7dc;
+}
+
+/* Retain the compact landscape heading when a skin replaces its typography.
+   This leaves at least 40px for each clue target on a 568 × 320 viewport. */
+@media (max-height: 360px) and (orientation: landscape) {
+  .mobile-shell[data-theme] .mobile-notes {
+    padding: 3px 9px 5px;
+  }
+  .mobile-shell[data-theme] .mobile-notes-heading {
+    flex-basis: 18px;
+  }
+  .mobile-shell[data-theme] .mobile-notes-heading h2 {
+    font-size: 13px;
+    line-height: 18px;
+  }
+  .mobile-shell[data-theme] .mobile-notes-heading span {
+    font-size: 10px;
+    line-height: 18px;
+  }
+}
+
+.mobile-theme-status {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--theme-muted);
+}
+.mobile-theme-status:empty {
+  display: none;
+}

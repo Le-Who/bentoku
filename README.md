@@ -12,7 +12,8 @@ Bentoku is a finished client-side browser puzzle about arranging nine tiny kawai
 - Set effects and music volume independently in Cozy settings; the Effects switch remains available for quick muting.
 - Use `Tab` or arrow keys to move focus, `Enter`/`Space` to select or place, `U` to undo, `H` for help, `D` for difficulty, and `S` for settings.
 - Click the seed to copy a shareable link. Daily and random bentos work without a backend.
-- Phones have a separate furoshiki layout with all order sketches above the board. Tap any sketch to enlarge it; use taps or drag pieces between the board and the twelve family pockets. Rotation keeps the same game.
+- Phones have a separate touch layout with all order sketches above the board. Tap any sketch to enlarge it; use taps or drag pieces between the board and the twelve fixed family slots. Rotation keeps the same game.
+- In mobile **Settings → Appearance**, choose **Picnic Postcards**, **Porcelain Logic**, or **Maple Counter**. Each theme includes its own illustrated materials and all twelve food friends. The choice is saved locally; switching preserves the puzzle, placements, and undo history. A theme is applied only after its complete artwork loads.
 - To preview the mobile presentation on a desktop browser, add `?layout=mobile` to the URL. The regular desktop canvas keeps its original composition.
 
 ## Development
@@ -43,4 +44,4 @@ The 12,500-puzzle suite is part of `pnpm test` and covers all five difficulty le
 - Local persistence, softly synthesized sound effects, and a compressed gently faded BGM playlist
 - No backend and no runtime network dependency for game logic or art
 
-The art direction, prompts, source generations, and manifest live under `art/`.
+The art direction, prompts, source generations, and manifest live under `art/`. The mobile-theme references and processing parameters are recorded in `art/mobile-theme-manifest.json`; the 63 normalized source PNGs live in `art/runtime-sources/themes/`. Rebuild their lossless WebPs with `pnpm assets:build`. The mobile font is bundled locally with its OFL license in `public/assets/fonts/`.

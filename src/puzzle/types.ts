@@ -1,3 +1,5 @@
+import type { VisualTheme } from '../game/VisualTheme';
+
 export const ANIMALS = ['cat', 'bear', 'pig', 'bunny'] as const;
 export const FOODS = ['egg', 'rice', 'sandwich'] as const;
 export const DIFFICULTIES = ['Cozy', 'Gentle', 'Clever', 'Tricky', 'Master'] as const;
@@ -94,6 +96,7 @@ export interface PlayerSettings {
   reducedMotion: boolean;
   hintMode: boolean;
   difficulty: Difficulty;
+  visualTheme: VisualTheme;
 }
 
 export interface SaveData {

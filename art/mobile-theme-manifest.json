@@ -1,0 +1,73 @@
+{
+  "created": "2026-10-27",
+  "generation": "Built-in image_gen; reference-guided material and character artwork, not a flattened game screenshot.",
+  "prompts": "art/prompts/mobile-theme-art.json",
+  "processor": "scripts/process-theme-assets.py",
+  "source_directory": "art/runtime-sources/themes/{theme}",
+  "runtime_directory": "public/assets/themes/{theme}",
+  "runtime_asset_count": 63,
+  "materials_per_theme": [
+    "background",
+    "board",
+    "panel",
+    "tray",
+    "button-primary",
+    "button-secondary",
+    "logo",
+    "well",
+    "preview"
+  ],
+  "pieces_per_theme": 12,
+  "piece_layout": {
+    "columns": ["cat", "bear", "pig", "bunny"],
+    "rows": ["egg", "rice", "sandwich"]
+  },
+  "rebuild": "pnpm assets:build",
+  "verify": "pnpm assets:verify",
+  "font": {
+    "name": "Nunito",
+    "source": "https://github.com/google/fonts/tree/main/ofl/nunito",
+    "license": "public/assets/fonts/Nunito-OFL.txt"
+  },
+  "themes": [
+    {
+      "id": "picnic",
+      "reference": "art/references/mobile-themes/picnic.png",
+      "raw_directory": "art/generations/themes/picnic",
+      "raw_files": ["board.png", "background.png", "ui-kit.png", "pieces.png"],
+      "trim_board": true,
+      "ui_bottom_split": 0.63,
+      "ui_upper_split": 0.5,
+      "ui_row_breaks": [0.39, 0.64],
+      "piece_column_breaks": [0.2701, 0.5083, 0.7563],
+      "piece_row_breaks": [0.352, 0.664],
+      "qc_report": "art/runtime-sources/themes/picnic/qc.json"
+    },
+    {
+      "id": "porcelain",
+      "reference": "art/references/mobile-themes/porcelain.png",
+      "raw_directory": "art/generations/themes/porcelain",
+      "raw_files": ["board.png", "background.png", "ui-kit.png", "pieces.png"],
+      "trim_board": true,
+      "ui_bottom_split": 0.63,
+      "ui_upper_split": 0.5,
+      "ui_row_breaks": [0.39, 0.64],
+      "piece_column_breaks": [0.2701, 0.5083, 0.7563],
+      "piece_row_breaks": [0.352, 0.664],
+      "qc_report": "art/runtime-sources/themes/porcelain/qc.json"
+    },
+    {
+      "id": "maple",
+      "reference": "art/references/mobile-themes/maple.png",
+      "raw_directory": "art/generations/themes/maple",
+      "raw_files": ["board.png", "background.png", "ui-kit.png", "pieces.png"],
+      "trim_board": true,
+      "ui_bottom_split": 0.61,
+      "ui_upper_split": 0.51,
+      "ui_row_breaks": [0.404, 0.615],
+      "piece_column_breaks": [0.2701, 0.5083, 0.7563],
+      "piece_row_breaks": [0.352, 0.664],
+      "qc_report": "art/runtime-sources/themes/maple/qc.json"
+    }
+  ]
+}

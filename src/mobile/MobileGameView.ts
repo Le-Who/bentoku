@@ -1,6 +1,7 @@
 import { ANIMALS, FOODS, type Board, type PieceId, type PuzzleDefinition } from '../puzzle/types';
 import { ANIMAL_LABELS, FOOD_LABELS } from '../game/constants';
-import { getPieceVisualLayout } from '../views/PieceView';
+import { DEFAULT_VISUAL_THEME, VISUAL_THEMES, type VisualTheme } from '../game/VisualTheme';
+import { loadThemeAssets, themePieceUrl } from './ThemeAssets';
 import { clueDiagram } from './ClueDiagram';
 import {
   button,
@@ -10,6 +11,7 @@ import {
   type MobileSlider,
 } from './MobileDialog';
 import './mobile.css';
+import './theme-skins.css';
 
 export interface MobileState {
   puzzle: PuzzleDefinition;
@@ -18,6 +20,7 @@ export interface MobileState {
   canUndo: boolean;
   solved: boolean;
   reducedMotion: boolean;
+  theme: VisualTheme;
 }
 
 interface MobileActions {
@@ -33,6 +36,7 @@ interface MobileActions {
   startMusic: () => void;
   closeModal: () => void;
   presentationChanged: (active: boolean) => void;
+  changeTheme: (theme: VisualTheme) => void;
 }
 
 interface Press {
@@ -68,6 +72,13 @@ export class MobileGameView {
   active = false;
   private state?: MobileState;
   private renderedPuzzle?: PuzzleDefinition;
+  private appliedTheme?: VisualTheme;
+  private requestedTheme?: VisualTheme;
+  private destroyed = false;
+  private themeSelection = 0;
+  private pendingTheme?: VisualTheme;
+  private themeLoad = 0;
+  private loading = element('div', 'mobile-theme-loading', 'Packing your bento…');
   private notes = element('section', 'mobile-notes');
   private board = element('div', 'mobile-board');
   private tray = element('div', 'mobile-tray');
@@ -83,11 +94,6 @@ export class MobileGameView {
   private onResize = (): void => {
     this.cancelDrag();
     this.resize();
-  };
-  private onKey = (event: KeyboardEvent): void => {
-    if (this.active && (event.target as HTMLElement)?.closest('.mobile-shell, .mobile-dialog')) {
-      event.stopPropagation();
-    }
   };
 
   constructor(private actions: MobileActions) {
@@ -125,6 +131,9 @@ export class MobileGameView {
     toolbar.append(this.undoButton, help);
     this.root.append(header, this.notes, boardWrap, this.tray, toolbar);
     document.getElementById('app')!.append(this.root);
+    this.loading.setAttribute('role', 'status');
+    this.loading.hidden = true;
+    document.getElementById('app')!.append(this.loading);
     this.root.addEventListener('click', (event) => this.click(event));
     this.root.addEventListener('pointerdown', (event) => this.pointerDown(event));
     this.root.addEventListener('pointermove', (event) => this.pointerMove(event));
@@ -133,7 +142,6 @@ export class MobileGameView {
     this.root.addEventListener('lostpointercapture', (event) => {
       if (this.press?.pointer === event.pointerId) this.cancelDrag();
     });
-    document.addEventListener('keydown', this.onKey, true);
     window.addEventListener('resize', this.onResize);
     window.visualViewport?.addEventListener('resize', this.onResize);
     this.media.addEventListener('change', this.onResize);
@@ -143,6 +151,7 @@ export class MobileGameView {
   update(state: MobileState): void {
     this.state = state;
     if (!this.active) return;
+    this.prepareTheme(state.theme);
     const newPuzzle = this.renderedPuzzle !== state.puzzle;
     this.renderedPuzzle = state.puzzle;
     this.level.textContent = `${state.puzzle.difficulty} ⌄`;
@@ -180,13 +189,12 @@ export class MobileGameView {
           `${ANIMAL_LABELS[piece.animal]} ${FOOD_LABELS[piece.food]}`,
         );
         const art = element('img', 'mobile-piece-art');
-        art.src = `assets/pieces/${piece.id}.webp`;
+        if (this.appliedTheme) art.src = themePieceUrl(this.appliedTheme, piece.id);
         art.alt = '';
         art.draggable = false;
-        const visual = getPieceVisualLayout(piece.id);
-        art.style.width = `calc(min(100cqw, 100cqh) * ${visual.size / 116})`;
-        art.style.left = `${50 + (visual.x / 116) * 100}%`;
-        art.style.top = `${50 + (visual.y / 116) * 100}%`;
+        art.style.width = 'min(100cqw, 100cqh)';
+        art.style.left = '50%';
+        art.style.top = '50%';
         node.append(art);
         this.pieces.set(piece.id, node);
       }
@@ -265,10 +273,104 @@ export class MobileGameView {
     this.dialog.show(title, body, actions, this.actions.closeModal, sliders);
   }
 
+  showThemePicker(current: VisualTheme): void {
+    this.dialog.addThemePicker(this.pendingTheme ?? current, (theme) => {
+      const selection = ++this.themeSelection;
+      this.pendingTheme = theme;
+      this.dialog.themeStatus('Loading this look…');
+      void loadThemeAssets(theme)
+        .then(() => {
+          if (this.destroyed || this.themeSelection !== selection) return;
+          this.pendingTheme = undefined;
+          this.actions.changeTheme(theme);
+          this.dialog.themeStatus('', theme);
+        })
+        .catch(() => {
+          if (this.destroyed || this.themeSelection !== selection) return;
+          this.pendingTheme = undefined;
+          this.dialog.themeStatus(
+            'This look could not load. Choose it again to retry.',
+            this.state?.theme ?? current,
+          );
+        });
+    });
+    if (this.pendingTheme) this.dialog.themeStatus('Loading this look…');
+  }
+
+  private prepareTheme(theme: VisualTheme): void {
+    if (this.requestedTheme === theme) return;
+    this.cancelDrag();
+    this.requestedTheme = theme;
+    const load = ++this.themeLoad;
+    this.loading.hidden = Boolean(this.appliedTheme) || !this.active;
+    this.root.classList.toggle('is-loading-theme', !this.appliedTheme);
+    void loadThemeAssets(theme)
+      .then(() => {
+        if (this.destroyed || this.themeLoad !== load || this.state?.theme !== theme) return;
+        this.appliedTheme = theme;
+        this.root.dataset.theme = theme;
+        this.dialog.node.dataset.theme = theme;
+        for (const [id, node] of this.pieces) {
+          node.querySelector<HTMLImageElement>('img')!.src = themePieceUrl(theme, id);
+        }
+        this.root.querySelectorAll<HTMLElement>('[data-hint-piece]').forEach((node) => {
+          node.querySelector<HTMLImageElement>('img')!.src = themePieceUrl(
+            theme,
+            node.dataset.hintPiece as PieceId,
+          );
+        });
+        this.loading.hidden = true;
+        this.root.classList.remove('is-loading-theme');
+      })
+      .catch(() => {
+        if (this.destroyed || this.themeLoad !== load || this.requestedTheme !== theme) return;
+        if (!this.appliedTheme) void this.fallbackTheme(theme, load);
+      });
+  }
+
+  private async fallbackTheme(failed: VisualTheme, load: number): Promise<void> {
+    const choices = [DEFAULT_VISUAL_THEME, ...VISUAL_THEMES.map((theme) => theme.id)].filter(
+      (theme, index, all) => theme !== failed && all.indexOf(theme) === index,
+    );
+    for (const theme of choices) {
+      try {
+        await loadThemeAssets(theme);
+        if (
+          this.destroyed ||
+          this.themeLoad !== load ||
+          this.appliedTheme ||
+          this.state?.theme !== failed
+        )
+          return;
+        this.actions.changeTheme(theme);
+        return;
+      } catch {
+        /* Try the next complete material set, never a partial skin. */
+      }
+    }
+    if (
+      this.destroyed ||
+      this.themeLoad !== load ||
+      this.appliedTheme ||
+      this.state?.theme !== failed
+    )
+      return;
+    const retry = button('Try again', 'mobile-control', () => {
+      this.loading.textContent = 'Packing your bento…';
+      this.requestedTheme = undefined;
+      this.prepareTheme(failed);
+    });
+    this.loading.replaceChildren(
+      element('p', '', 'The artwork could not load. Check your connection and try again.'),
+      retry,
+    );
+  }
+
   showHint(piece: PieceId, cell: number): void {
     this.root.querySelector('.mobile-hint-ghost')?.remove();
     const ghost = this.pieces.get(piece)!.cloneNode(true) as HTMLElement;
     ghost.removeAttribute('data-piece-id');
+    ghost.dataset.hintPiece = piece;
     ghost.className = 'mobile-piece mobile-hint-ghost';
     ghost.setAttribute('aria-label', 'Hint preview');
     this.cells[cell]!.append(ghost);
@@ -286,6 +388,7 @@ export class MobileGameView {
     }
     this.active = active;
     this.root.hidden = !active;
+    this.loading.hidden = !active || Boolean(this.appliedTheme);
     document.documentElement.classList.toggle('mobile-layout', active);
     document.getElementById('game')?.setAttribute('aria-hidden', String(active));
     if (changed) this.actions.presentationChanged(active);
@@ -391,10 +494,11 @@ export class MobileGameView {
   }
 
   destroy(): void {
+    this.destroyed = true;
     this.cancelDrag();
     this.dialog.destroy();
     this.root.remove();
-    document.removeEventListener('keydown', this.onKey, true);
+    this.loading.remove();
     window.removeEventListener('resize', this.onResize);
     window.visualViewport?.removeEventListener('resize', this.onResize);
     this.media.removeEventListener('change', this.onResize);

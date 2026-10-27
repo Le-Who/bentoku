@@ -3,6 +3,10 @@ import path from 'node:path';
 import sharp from 'sharp';
 
 const pairs = [
+  ...['picnic', 'porcelain', 'maple'].flatMap((theme) => [
+    [`art/runtime-sources/themes/${theme}`, `public/assets/themes/${theme}`],
+    [`art/runtime-sources/themes/${theme}/pieces`, `public/assets/themes/${theme}/pieces`],
+  ]),
   ['art/runtime-sources/mobile', 'public/assets/mobile'],
   ['art/user-assets/pieces', 'public/assets/pieces'],
   ['art/user-assets/clues', 'public/assets/clues'],

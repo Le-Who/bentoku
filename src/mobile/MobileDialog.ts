@@ -1,3 +1,5 @@
+import { VISUAL_THEMES, type VisualTheme } from '../game/VisualTheme';
+
 export interface MobileAction {
   label: string;
   callback: () => void;
@@ -92,6 +94,47 @@ export class MobileDialog {
     this.content.append(controls);
     if (!this.node.open) this.node.showModal();
     return this.content;
+  }
+
+  addThemePicker(current: VisualTheme, onSelect: (theme: VisualTheme) => void): void {
+    const picker = element('fieldset', 'mobile-theme-picker');
+    picker.append(element('legend', '', 'Appearance'));
+    for (const theme of VISUAL_THEMES) {
+      const card = element('label', 'mobile-theme-card');
+      const input = element('input', '');
+      input.type = 'radio';
+      input.name = 'visual-theme';
+      input.value = theme.id;
+      input.checked = theme.id === current;
+      input.addEventListener('change', () => {
+        if (input.checked) onSelect(theme.id);
+      });
+      const preview = element('img', 'mobile-theme-preview');
+      preview.src = `assets/themes/${theme.id}/preview.webp`;
+      preview.alt = '';
+      const copy = element('span', 'mobile-theme-copy');
+      copy.append(
+        element('strong', 'mobile-theme-name', theme.name),
+        element('span', 'mobile-theme-description', theme.description),
+      );
+      card.append(input, preview, copy);
+      picker.append(card);
+    }
+    const status = element('p', 'mobile-theme-status');
+    status.setAttribute('role', 'status');
+    picker.append(status);
+    const controls = this.content.querySelector('.mobile-dialog-actions');
+    this.content.insertBefore(picker, controls);
+  }
+
+  themeStatus(message: string, checked?: VisualTheme): void {
+    const picker = this.content.querySelector('.mobile-theme-picker');
+    const status = picker?.querySelector('.mobile-theme-status');
+    if (status) status.textContent = message;
+    if (checked)
+      picker?.querySelectorAll<HTMLInputElement>('input[type=radio]').forEach((input) => {
+        input.checked = input.value === checked;
+      });
   }
 
   close(): void {

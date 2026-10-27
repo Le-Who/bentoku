@@ -108,6 +108,10 @@ export class PuzzleScene extends Phaser.Scene {
       difficulty: () => this.openDifficultySelect(),
       daily: () => this.startDaily(),
       next: () => this.startRandom(),
+      changeTheme: (visualTheme) => {
+        this.settings = this.save.updateSettings({ visualTheme });
+        this.syncMobile();
+      },
       startMusic: () => this.music.start(),
       closeModal: () => this.closeModal(),
       presentationChanged: (active) => {
@@ -484,6 +488,7 @@ export class PuzzleScene extends Phaser.Scene {
       canUndo: this.placement.undo.canUndo,
       solved: this.solved,
       reducedMotion: this.settings.reducedMotion,
+      theme: this.settings.visualTheme,
     });
   }
 
@@ -764,6 +769,9 @@ export class PuzzleScene extends Phaser.Scene {
         },
       ],
     );
+    if (this.mobile?.active) {
+      this.mobile.showThemePicker(this.settings.visualTheme);
+    }
     if (withSound) this.audio.play('note_open');
   }
 

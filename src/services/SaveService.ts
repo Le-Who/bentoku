@@ -1,3 +1,4 @@
+import { DEFAULT_VISUAL_THEME, parseVisualTheme } from '../game/VisualTheme';
 import { parseDifficulty } from '../puzzle/DifficultyEvaluator';
 import {
   emptyBoard,
@@ -23,6 +24,7 @@ const defaults = (): SaveData => ({
     reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
     hintMode: true,
     difficulty: 'Gentle',
+    visualTheme: DEFAULT_VISUAL_THEME,
   },
   stats: { solved: 0 },
 });
@@ -50,6 +52,7 @@ export class SaveService {
             parsed.settings?.sound === false ? 0 : DEFAULT_MUSIC_VOLUME,
           ),
           difficulty: parseDifficulty(parsed.settings?.difficulty) ?? 'Gentle',
+          visualTheme: parseVisualTheme(parsed.settings?.visualTheme),
         },
         stats: { ...defaults().stats, ...parsed.stats },
       };
@@ -105,6 +108,10 @@ export class SaveService {
       ...settings,
       soundVolume: clampVolume(settings.soundVolume, this.data.settings.soundVolume),
       musicVolume: clampVolume(settings.musicVolume, this.data.settings.musicVolume),
+      visualTheme:
+        settings.visualTheme === undefined
+          ? this.data.settings.visualTheme
+          : parseVisualTheme(settings.visualTheme),
     };
     this.persist();
     return this.settings;

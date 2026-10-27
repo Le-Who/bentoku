@@ -6,6 +6,8 @@ dist/
 output/
 test-results/
 playwright-report/
+__pycache__/
+*.py[cod]
 art/legacy-public-assets/
 art/generations/
 .env

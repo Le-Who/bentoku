@@ -7,6 +7,16 @@ const publicAssets = path.join(projectRoot, 'public', 'assets');
 const artSources = path.join(projectRoot, 'art');
 
 const jobs = [
+  ...['picnic', 'porcelain', 'maple'].flatMap((theme) => [
+    {
+      source: path.join(artSources, 'runtime-sources', 'themes', theme),
+      target: path.join(publicAssets, 'themes', theme),
+    },
+    {
+      source: path.join(artSources, 'runtime-sources', 'themes', theme, 'pieces'),
+      target: path.join(publicAssets, 'themes', theme, 'pieces'),
+    },
+  ]),
   {
     source: path.join(artSources, 'runtime-sources', 'mobile'),
     target: path.join(publicAssets, 'mobile'),

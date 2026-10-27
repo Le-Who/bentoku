@@ -1,0 +1,357 @@
+{
+  "theme": "picnic",
+  "ui_bottom_split": 0.63,
+  "ui_upper_split": 0.5,
+  "ui_row_breaks": [0.39, 0.64],
+  "piece_column_breaks": [0.2701, 0.5083, 0.7563],
+  "piece_row_breaks": [0.352, 0.664],
+  "sources": {
+    "board": "E:\\Projects\\bentoku\\art\\generations\\themes\\picnic\\board.png",
+    "background": "E:\\Projects\\bentoku\\art\\generations\\themes\\picnic\\background.png",
+    "ui_kit": "E:\\Projects\\bentoku\\art\\generations\\themes\\picnic\\ui-kit.png",
+    "pieces": "E:\\Projects\\bentoku\\art\\generations\\themes\\picnic\\pieces.png",
+    "preview": "C:\\Users\\user\\AppData\\Local\\Temp\\codex-clipboard-68d3227d-0a9f-4aa3-9e28-6a09ddfa41e5.png"
+  },
+  "board": {
+    "size": [1254, 1254],
+    "bbox": [58, 60, 1196, 1172],
+    "margins": [58, 60, 58, 82],
+    "alpha_extrema": [0, 255],
+    "nonzero_alpha_pixels": 1255179,
+    "removed_noise_pixels": 2,
+    "source_bbox": [58, 60, 1196, 1172],
+    "trim_padding": 6,
+    "output": {
+      "size": [1150, 1124],
+      "bbox": [6, 6, 1144, 1118],
+      "margins": [6, 6, 6, 6],
+      "alpha_extrema": [0, 255],
+      "nonzero_alpha_pixels": 1255179
+    }
+  },
+  "ui": {
+    "panel": {
+      "source": {
+        "size": [724, 423],
+        "bbox": [42, 52, 706, 397],
+        "margins": [42, 52, 18, 26],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 220982,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [686, 367],
+        "bbox": [11, 11, 675, 356],
+        "margins": [11, 11, 11, 11],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 220982
+      }
+    },
+    "tray": {
+      "source": {
+        "size": [724, 423],
+        "bbox": [24, 51, 699, 404],
+        "margins": [24, 51, 25, 19],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 226078,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [697, 375],
+        "bbox": [11, 11, 686, 364],
+        "margins": [11, 11, 11, 11],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 226078
+      }
+    },
+    "button-primary": {
+      "source": {
+        "size": [724, 272],
+        "bbox": [51, 29, 691, 253],
+        "margins": [51, 29, 33, 19],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 134200,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [662, 246],
+        "bbox": [11, 11, 651, 235],
+        "margins": [11, 11, 11, 11],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 134200
+      }
+    },
+    "button-secondary": {
+      "source": {
+        "size": [724, 272],
+        "bbox": [39, 27, 672, 259],
+        "margins": [39, 27, 52, 13],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 137771,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [655, 254],
+        "bbox": [11, 11, 644, 243],
+        "margins": [11, 11, 11, 11],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 137771
+      }
+    },
+    "logo": {
+      "source": {
+        "size": [912, 391],
+        "bbox": [44, 40, 833, 323],
+        "margins": [44, 40, 79, 68],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 192483,
+        "removed_noise_pixels": 4
+      },
+      "output": {
+        "size": [817, 311],
+        "bbox": [14, 14, 803, 297],
+        "margins": [14, 14, 14, 14],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 192483
+      }
+    },
+    "well": {
+      "source": {
+        "size": [536, 391],
+        "bbox": [28, 11, 350, 339],
+        "margins": [28, 11, 186, 52],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 96210,
+        "removed_noise_pixels": 1
+      },
+      "output": {
+        "size": [338, 344],
+        "bbox": [8, 8, 330, 336],
+        "margins": [8, 8, 8, 8],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 96210
+      }
+    }
+  },
+  "pieces": {
+    "cat_egg": {
+      "source": {
+        "size": [391, 382],
+        "bbox": [36, 113, 361, 369],
+        "margins": [36, 113, 30, 13],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 64445,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [26, 75, 486, 437],
+        "margins": [26, 75, 26, 75],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 130378
+      }
+    },
+    "bear_egg": {
+      "source": {
+        "size": [345, 382],
+        "bbox": [4, 121, 316, 369],
+        "margins": [4, 121, 29, 13],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 62665,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [26, 73, 486, 439],
+        "margins": [26, 73, 26, 73],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 137824
+      }
+    },
+    "pig_egg": {
+      "source": {
+        "size": [359, 382],
+        "bbox": [4, 129, 327, 369],
+        "margins": [4, 129, 32, 13],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 62882,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [26, 85, 486, 427],
+        "margins": [26, 85, 26, 85],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 128917
+      }
+    },
+    "bunny_egg": {
+      "source": {
+        "size": [353, 382],
+        "bbox": [9, 81, 315, 379],
+        "margins": [9, 81, 38, 3],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 64872,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [26, 32, 486, 480],
+        "margins": [26, 32, 26, 32],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 148354
+      }
+    },
+    "cat_rice": {
+      "source": {
+        "size": [391, 339],
+        "bbox": [44, 50, 358, 321],
+        "margins": [44, 50, 33, 18],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 67149,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [26, 57, 486, 454],
+        "margins": [26, 57, 26, 58],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 145634
+      }
+    },
+    "bear_rice": {
+      "source": {
+        "size": [345, 339],
+        "bbox": [5, 57, 314, 321],
+        "margins": [5, 57, 31, 18],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 67442,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [26, 59, 486, 452],
+        "margins": [26, 59, 26, 60],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 150994
+      }
+    },
+    "pig_rice": {
+      "source": {
+        "size": [359, 339],
+        "bbox": [5, 65, 328, 322],
+        "margins": [5, 65, 31, 17],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 69000,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [26, 73, 486, 439],
+        "margins": [26, 73, 26, 73],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 141329
+      }
+    },
+    "bunny_rice": {
+      "source": {
+        "size": [353, 339],
+        "bbox": [13, 16, 312, 328],
+        "margins": [13, 16, 41, 11],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 68109,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [35, 26, 476, 486],
+        "margins": [35, 26, 36, 26],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 149746
+      }
+    },
+    "cat_sandwich": {
+      "source": {
+        "size": [391, 365],
+        "bbox": [42, 26, 357, 309],
+        "margins": [42, 26, 34, 56],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 73367,
+        "removed_noise_pixels": 1
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [26, 49, 486, 462],
+        "margins": [26, 49, 26, 50],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 157938
+      }
+    },
+    "bear_sandwich": {
+      "source": {
+        "size": [345, 365],
+        "bbox": [7, 31, 314, 310],
+        "margins": [7, 31, 31, 55],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 74190,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [26, 47, 486, 465],
+        "margins": [26, 47, 26, 47],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 168550
+      }
+    },
+    "pig_sandwich": {
+      "source": {
+        "size": [359, 365],
+        "bbox": [5, 43, 316, 309],
+        "margins": [5, 43, 43, 56],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 71494,
+        "removed_noise_pixels": 0
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [26, 59, 486, 452],
+        "margins": [26, 59, 26, 60],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 157730
+      }
+    },
+    "bunny_sandwich": {
+      "source": {
+        "size": [353, 365],
+        "bbox": [9, 6, 315, 311],
+        "margins": [9, 6, 38, 54],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 74695,
+        "removed_noise_pixels": 1
+      },
+      "output": {
+        "size": [512, 512],
+        "bbox": [26, 27, 486, 485],
+        "margins": [26, 27, 26, 27],
+        "alpha_extrema": [0, 255],
+        "nonzero_alpha_pixels": 170393
+      }
+    }
+  },
+  "background": {
+    "source_size": [853, 1844],
+    "size": [768, 1664],
+    "bbox": [0, 0, 768, 1664],
+    "margins": [0, 0, 0, 0],
+    "alpha_extrema": [255, 255],
+    "nonzero_alpha_pixels": 1277952
+  },
+  "preview": {
+    "size": [256, 553],
+    "bbox": [0, 0, 256, 553],
+    "margins": [0, 0, 0, 0],
+    "alpha_extrema": [255, 255],
+    "nonzero_alpha_pixels": 141568
+  }
+}
