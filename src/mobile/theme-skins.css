@@ -119,29 +119,30 @@
 }
 .mobile-shell[data-theme] .mobile-icon-button {
   background-image: var(--theme-well);
+  background-size: contain;
 }
 
 .mobile-shell[data-theme] .mobile-notes {
+  position: relative;
   color: var(--theme-ink);
-  background: var(--theme-panel) center / 100% 100% no-repeat;
+  background: none;
   border: 0;
   border-radius: 0;
   box-shadow: none;
-  padding: 10px 12px 11px;
+  padding: 16px;
 }
 
-.mobile-shell[data-theme] .mobile-notes-heading {
-  flex-basis: 25px;
+/* Extend the physical paper, including its transparent edge and cast shadow,
+   around the writing area without reducing the sketches. */
+.mobile-shell[data-theme] .mobile-notes::before {
+  content: '';
+  position: absolute;
+  inset: -3px -16px -9px -6px;
+  background: var(--theme-panel) center / 100% 100% no-repeat;
+  pointer-events: none;
 }
-
-.mobile-shell[data-theme] .mobile-notes-heading h2 {
-  font-size: 16px;
-  letter-spacing: -0.02em;
-}
-
-.mobile-shell[data-theme] .mobile-notes-heading span {
-  color: var(--theme-muted);
-  font-size: 11px;
+.mobile-shell[data-theme] .mobile-clue-overview {
+  position: relative;
 }
 
 .mobile-shell[data-theme] .mobile-clue-card {
@@ -185,16 +186,22 @@
 
 .mobile-shell[data-theme] .mobile-tray {
   padding: 8px 10px;
-  gap: 2px 3px;
+  gap: 4px;
+  container-type: size;
+  width: min(100%, calc((var(--tray-height) - 24px) * 4 / 3 + 32px));
+  justify-self: center;
+  place-items: center;
   border-radius: 0;
   background: var(--theme-tray) center / 100% 100% no-repeat;
 }
 
 .mobile-shell[data-theme] .mobile-pocket,
 .mobile-shell[data-theme] .mobile-pocket.is-empty {
+  width: min(calc((100cqw - 12px) / 4), calc((100cqh - 8px) / 3));
+  height: min(calc((100cqw - 12px) / 4), calc((100cqh - 8px) / 3));
   border: 0;
   border-radius: 12px;
-  background: var(--theme-well) center / 100% 100% no-repeat;
+  background: var(--theme-well) center / contain no-repeat;
   box-shadow: none;
 }
 
@@ -277,6 +284,7 @@
 }
 
 .mobile-dialog[data-theme] .mobile-enlarged-clue {
+  padding: 20px;
   background: var(--theme-panel) center / 100% 100% no-repeat;
 }
 
@@ -364,30 +372,6 @@
   color: var(--theme-muted, #626d73);
 }
 
-@media (max-height: 620px) and (orientation: portrait) {
-  .mobile-shell[data-theme] .mobile-notes {
-    padding: 5px 10px 7px;
-  }
-
-  .mobile-shell[data-theme] .mobile-tray {
-    padding: 5px 8px;
-  }
-}
-
-@media (max-height: 520px) and (orientation: landscape) {
-  .mobile-shell[data-theme] .mobile-notes {
-    padding: 5px 9px 7px;
-  }
-
-  .mobile-shell[data-theme] .mobile-notes-heading {
-    flex-basis: 20px;
-  }
-
-  .mobile-shell[data-theme] .mobile-tray {
-    padding: 5px 8px;
-  }
-}
-
 @media (max-width: 320px) {
   .mobile-theme-card {
     grid-template-columns: 18px 50px minmax(0, 1fr);
@@ -403,7 +387,10 @@
 /* The porcelain reference keeps notes and food rests on an open milk-white table. */
 .mobile-shell[data-theme='porcelain'] .mobile-notes {
   background: none;
-  padding: 4px 2px 6px;
+  padding: 4px;
+}
+.mobile-shell[data-theme='porcelain'] .mobile-notes::before {
+  content: none;
 }
 .mobile-shell[data-theme='porcelain'] .mobile-clue-card {
   background: transparent;
@@ -436,23 +423,37 @@
   background-color: #fff8e7dc;
 }
 
-/* Retain the compact landscape heading when a skin replaces its typography.
-   This leaves at least 40px for each clue target on a 568 × 320 viewport. */
-@media (max-height: 360px) and (orientation: landscape) {
-  .mobile-shell[data-theme] .mobile-notes {
-    padding: 3px 9px 5px;
-  }
-  .mobile-shell[data-theme] .mobile-notes-heading {
-    flex-basis: 18px;
-  }
-  .mobile-shell[data-theme] .mobile-notes-heading h2 {
-    font-size: 13px;
-    line-height: 18px;
-  }
-  .mobile-shell[data-theme] .mobile-notes-heading span {
-    font-size: 10px;
-    line-height: 18px;
-  }
+/* The writing area remains inside the illustrated paper even in compact mode. */
+.mobile-shell[data-theme].is-compact .mobile-notes,
+.mobile-shell[data-theme].is-landscape .mobile-notes {
+  padding: 12px;
+}
+.mobile-shell[data-theme='porcelain'].is-compact .mobile-notes,
+.mobile-shell[data-theme='porcelain'].is-landscape .mobile-notes {
+  padding: 4px;
+}
+.mobile-shell[data-theme].is-landscape .mobile-tray {
+  width: 100%;
+  padding: 3px 4px;
+}
+.mobile-shell[data-theme].is-short-landscape .mobile-board-wrap {
+  padding-bottom: 52px;
+}
+.mobile-shell[data-theme] .mobile-pocket .mobile-piece-art {
+  left: var(--well-center-x);
+  top: var(--well-center-y);
+}
+.mobile-shell[data-theme='picnic'] {
+  --well-center-x: 47.5%;
+  --well-center-y: 47.5%;
+}
+.mobile-shell[data-theme='porcelain'] {
+  --well-center-x: 45%;
+  --well-center-y: 45%;
+}
+.mobile-shell[data-theme='maple'] {
+  --well-center-x: 47%;
+  --well-center-y: 46%;
 }
 
 .mobile-theme-status {

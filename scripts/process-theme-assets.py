@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Convert the five generated theme images into checked PNG and lossless WebP assets.
+"""Convert the five generated theme images into checked source PNG assets.
 
 Requires Pillow and NumPy. Run --help for the sheet layout and usage.
 All validation runs before any destination file is written.
@@ -244,20 +244,16 @@ def process(args: argparse.Namespace) -> None:
     assets["preview"] = preview
     report["preview"] = metrics(preview)
     source_dir = args.root / "art/runtime-sources/themes" / args.theme
-    runtime_dir = args.root / "public/assets/themes" / args.theme
     for name, image in assets.items():
         png = source_dir / f"{name}.png"
-        webp = runtime_dir / f"{name}.webp"
         png.parent.mkdir(parents=True, exist_ok=True)
-        webp.parent.mkdir(parents=True, exist_ok=True)
         image.save(png, format="PNG")
-        image.save(webp, format="WEBP", lossless=True, method=6, exact=True)
     (source_dir / "qc.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    print(f"Processed {len(assets)} assets for {args.theme}; QC: {source_dir / 'qc.json'}")
+    print(f"Processed {len(assets)} source assets for {args.theme}; QC: {source_dir / 'qc.json'}. Run pnpm assets:build to regenerate runtime WebPs.")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Process theme artwork into lossless runtime assets. UI: 2 columns x 3 rows; pieces: 4 animals x 3 foods.")
+    parser = argparse.ArgumentParser(description="Process theme artwork into source PNGs. UI: 2 columns x 3 rows; pieces: 4 animals x 3 foods.")
     parser.add_argument("--theme", choices=("picnic", "porcelain", "maple"), required=True)
     for flag in ("board", "background", "ui-kit", "pieces", "preview"):
         parser.add_argument(f"--{flag}", type=Path, required=True, help=f"raw {flag} image")

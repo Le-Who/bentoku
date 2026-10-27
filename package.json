@@ -14,8 +14,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "assets:build": "node scripts/build-runtime-assets.mjs",
-    "assets:verify": "node scripts/verify-lossless-webp.mjs",
+    "assets:build": "node scripts/build-theme-geometry.mjs && node scripts/build-runtime-assets.mjs",
+    "assets:verify": "node --test scripts/asset-quality.check.mjs && node scripts/verify-webp.mjs",
     "sfx:build": "node scripts/generate-sfx.mjs"
   },
   "dependencies": {

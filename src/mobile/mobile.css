@@ -5,6 +5,10 @@
   --tray-height: 168px;
   position: fixed;
   inset: 0;
+  width: min(480px, 100%);
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
   z-index: 5;
   height: var(--mobile-height, 100dvh);
   min-height: 0;
@@ -16,6 +20,7 @@
     'tray' var(--tray-height) 'tools' 48px / minmax(0, 1fr);
   gap: 6px;
   overflow: auto;
+  overflow-x: hidden;
   color: var(--indigo);
   background:
     linear-gradient(#3b57754d, #3b57754d),
@@ -122,22 +127,6 @@
     inset 0 0 0 5px #a69f8e80;
   display: flex;
   flex-direction: column;
-}
-.mobile-notes-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex: 0 0 23px;
-  gap: 6px;
-}
-.mobile-notes-heading h2 {
-  font-size: 15px;
-  margin: 0;
-  font-weight: 700;
-}
-.mobile-notes-heading span {
-  color: #626d73;
-  font-size: 11px;
 }
 .mobile-clue-overview {
   display: grid;
@@ -319,6 +308,9 @@
 }
 .mobile-piece-art {
   position: absolute;
+  width: min(100cqw, 100cqh);
+  left: var(--piece-x, 50%);
+  top: var(--piece-y, 50%);
   max-width: none;
   height: auto;
   aspect-ratio: 1;
@@ -490,93 +482,53 @@
   touch-action: pan-x;
 }
 
-@media (max-height: 620px) and (orientation: portrait) {
-  .mobile-shell {
-    padding: max(5px, env(safe-area-inset-top)) 10px max(5px, env(safe-area-inset-bottom));
-    gap: 4px;
-    grid-template-rows: 40px var(--notes-height) minmax(160px, 1fr) var(--tray-height) 44px;
-  }
-  .mobile-header .mobile-icon-button,
-  .mobile-level {
-    height: 40px;
-  }
-  .mobile-notes {
-    padding-top: 5px;
-    padding-bottom: 7px;
-  }
+/* Layout follows the actual game surface, including a narrow desktop preview. */
+.mobile-shell.is-compact {
+  padding: max(5px, env(safe-area-inset-top)) 10px max(5px, env(safe-area-inset-bottom));
+  gap: 4px;
+  grid-template-rows: 40px var(--notes-height) minmax(160px, 1fr) var(--tray-height) 44px;
 }
-
-@media (max-height: 520px) and (orientation: landscape) {
-  .mobile-shell {
-    min-height: 0;
-    grid-template:
-      'header header' 44px 'board notes' minmax(100px, 1fr) 'board tray' minmax(132px, 1fr)
-      'tools tools' 44px / minmax(0, 0.96fr) minmax(0, 1.04fr);
-    gap: 5px 14px;
-  }
-  .mobile-wordmark {
-    font-size: 32px;
-  }
-  .mobile-notes {
-    padding: 4px 7px 7px;
-  }
-  .mobile-notes-heading {
-    flex-basis: 20px;
-  }
-  .mobile-tray {
-    padding-bottom: 0;
-    gap: 4px 7px;
-  }
-  .mobile-toolbar {
-    width: min(100%, 450px);
-    justify-self: center;
-  }
+.mobile-shell.is-compact .mobile-icon-button,
+.mobile-shell.is-compact .mobile-level {
+  height: 40px;
 }
-
-@media (max-height: 360px) and (orientation: landscape) {
-  .mobile-shell {
-    grid-template:
-      'board header' 44px 'board notes' minmax(80px, 1fr) 'board tray' 136px / minmax(0, 0.9fr)
-      minmax(0, 1.1fr);
-    gap: 5px 14px;
-  }
-  .mobile-board-wrap {
-    padding-bottom: 52px;
-  }
-  .mobile-toolbar {
-    position: absolute;
-    left: 12px;
-    bottom: max(8px, env(safe-area-inset-bottom));
-    width: calc((100% - 38px) * 0.45);
-    height: 44px;
-  }
-  .mobile-toolbar .mobile-control {
-    padding: 7px;
-    gap: 5px;
-    font-size: 14px !important;
-  }
-  .mobile-wordmark {
-    font-size: 22px;
-  }
-  .mobile-header {
-    gap: 4px;
-  }
-  .mobile-level {
-    min-width: 68px;
-    padding: 0 4px;
-  }
-  .mobile-notes {
-    padding: 2px 5px 5px;
-  }
-  .mobile-notes-heading {
-    flex-basis: 18px;
-  }
-  .mobile-notes-heading h2 {
-    font-size: 13px;
-  }
-  .mobile-notes-heading span {
-    font-size: 10px;
-  }
+.mobile-shell.is-landscape {
+  width: min(1100px, 100%);
+  grid-template:
+    'header header' 44px 'board notes' minmax(100px, 1fr) 'board tray' minmax(132px, 1fr)
+    'tools tools' 44px / minmax(0, 0.96fr) minmax(0, 1.04fr);
+  gap: 5px 14px;
+}
+.mobile-shell.is-landscape .mobile-toolbar {
+  width: min(100%, 450px);
+  justify-self: center;
+}
+.mobile-shell.is-short-landscape {
+  grid-template:
+    'board header' 44px 'board notes' minmax(80px, 1fr) 'board tray' 136px / minmax(0, 0.9fr)
+    minmax(0, 1.1fr);
+}
+.mobile-shell.is-short-landscape .mobile-board-wrap {
+  padding-bottom: 52px;
+}
+.mobile-shell.is-short-landscape .mobile-toolbar {
+  position: absolute;
+  left: 12px;
+  bottom: max(8px, env(safe-area-inset-bottom));
+  width: calc((100% - 38px) * 0.45);
+  height: 44px;
+}
+.mobile-shell.is-short-landscape .mobile-toolbar .mobile-control {
+  padding: 7px;
+  gap: 5px;
+  font-size: 14px !important;
+}
+.mobile-shell.is-short-landscape .mobile-header {
+  gap: 4px;
+}
+.mobile-shell.is-short-landscape .mobile-level {
+  min-width: 68px;
+  padding: 0 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {

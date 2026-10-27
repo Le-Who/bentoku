@@ -23,7 +23,7 @@
     "sourceDirectory": "art/user-assets",
     "backgroundRemoval": false,
     "preserveSourceCanvas": true,
-    "runtimeFormat": "webp-lossless",
-    "verification": "decoded RGBA pixel equality"
+    "runtimeFormat": "webp-lossy",
+    "verification": "exact dimensions and alpha; opacity-weighted visible RGB error limit (see art/asset-compression.json)"
   }
 }

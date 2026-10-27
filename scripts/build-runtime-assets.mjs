@@ -1,66 +1,21 @@
-import { mkdir, readdir } from 'node:fs/promises';
+import { mkdir, readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
+import { runtimeAssetPairs } from './runtime-asset-pairs.mjs';
 
-const projectRoot = process.cwd();
-const publicAssets = path.join(projectRoot, 'public', 'assets');
-const artSources = path.join(projectRoot, 'art');
-
-const jobs = [
-  ...['picnic', 'porcelain', 'maple'].flatMap((theme) => [
-    {
-      source: path.join(artSources, 'runtime-sources', 'themes', theme),
-      target: path.join(publicAssets, 'themes', theme),
-    },
-    {
-      source: path.join(artSources, 'runtime-sources', 'themes', theme, 'pieces'),
-      target: path.join(publicAssets, 'themes', theme, 'pieces'),
-    },
-  ]),
-  {
-    source: path.join(artSources, 'runtime-sources', 'mobile'),
-    target: path.join(publicAssets, 'mobile'),
-  },
-  {
-    source: path.join(artSources, 'user-assets', 'pieces'),
-    target: path.join(publicAssets, 'pieces'),
-  },
-  {
-    source: path.join(artSources, 'user-assets', 'clues'),
-    target: path.join(publicAssets, 'clues'),
-  },
-  {
-    source: path.join(artSources, 'user-assets', 'ui'),
-    target: path.join(publicAssets, 'ui'),
-  },
-  {
-    source: path.join(artSources, 'runtime-sources', 'environment'),
-    target: path.join(publicAssets, 'environment'),
-    include: new Set(['gameplay_plate.png']),
-  },
-  {
-    source: path.join(artSources, 'runtime-sources', 'ui'),
-    target: path.join(publicAssets, 'ui'),
-    include: new Set(['sakura_seal.png', 'success_stamp.png']),
-  },
-];
-
-for (const job of jobs) {
-  await mkdir(job.target, { recursive: true });
-  const files = (await readdir(job.source, { withFileTypes: true }))
-    .filter((entry) => entry.isFile() && /\.(png|jpe?g)$/i.test(entry.name))
-    .map((entry) => entry.name)
-    .filter((file) => !job.include || job.include.has(file))
-    .sort();
-
-  for (const file of files) {
-    const output = path.join(job.target, `${path.parse(file).name}.webp`);
-    const input = path.join(job.source, file);
-    await sharp(input, { failOn: 'error' })
-      .webp({ lossless: true, effort: 6, smartSubsample: false })
-      .toFile(output);
-    process.stdout.write(
-      `${path.relative(projectRoot, input)} -> ${path.relative(projectRoot, output)}\n`,
-    );
+const { encoding } = JSON.parse(await readFile('art/asset-compression.json', 'utf8'));
+for (const { source, target } of await runtimeAssetPairs()) {
+  await mkdir(path.dirname(target), { recursive: true });
+  // Encode completely before replacing the asset, so a failed write preserves
+  // the previous image instead of exposing a partially written WebP.
+  const encoded = await sharp(source, { failOn: 'error' }).webp(encoding).toBuffer();
+  const temporary = `${target}.${process.pid}.tmp`;
+  try {
+    await writeFile(temporary, encoded);
+    await rename(temporary, target);
+  } catch (error) {
+    await unlink(temporary).catch(() => {});
+    throw error;
   }
+  process.stdout.write(`${source} -> ${target}\n`);
 }

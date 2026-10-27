@@ -70,7 +70,6 @@ class ThemeAssetsTest(unittest.TestCase):
             result = self.run_processor(root, self.make_inputs(root))
             self.assertEqual(result.returncode, 0, result.stderr)
             source = root / "art/runtime-sources/themes/picnic"
-            runtime = root / "public/assets/themes/picnic"
             with Image.open(source / "board.png") as board:
                 self.assertEqual(board.size, (300, 300))
                 self.assertEqual(board.getchannel("A").getbbox(), (35, 40, 271, 261))
@@ -79,8 +78,9 @@ class ThemeAssetsTest(unittest.TestCase):
                 bbox = piece.getchannel("A").getbbox()
                 self.assertGreaterEqual(max(bbox[2] - bbox[0], bbox[3] - bbox[1]), 459)
                 self.assertLessEqual(max(bbox[2] - bbox[0], bbox[3] - bbox[1]), 462)
-            with Image.open(runtime / "preview.webp") as preview:
-                self.assertEqual(preview.width, 256)
+            with Image.open(source / "preview.png") as preview:
+                self.assertEqual(preview.size, (256, 461))
+            self.assertFalse((root / "public").exists())
             report = json.loads((source / "qc.json").read_text(encoding="utf-8"))
             self.assertEqual(len(report["pieces"]), 12)
 

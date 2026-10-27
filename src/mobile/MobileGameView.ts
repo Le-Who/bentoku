@@ -1,7 +1,7 @@
 import { ANIMALS, FOODS, type Board, type PieceId, type PuzzleDefinition } from '../puzzle/types';
 import { ANIMAL_LABELS, FOOD_LABELS } from '../game/constants';
 import { DEFAULT_VISUAL_THEME, VISUAL_THEMES, type VisualTheme } from '../game/VisualTheme';
-import { loadThemeAssets, themePieceUrl } from './ThemeAssets';
+import { applyThemePieceArt, loadThemeAssets, themeBoardCenters } from './ThemeAssets';
 import { clueDiagram } from './ClueDiagram';
 import {
   button,
@@ -189,12 +189,9 @@ export class MobileGameView {
           `${ANIMAL_LABELS[piece.animal]} ${FOOD_LABELS[piece.food]}`,
         );
         const art = element('img', 'mobile-piece-art');
-        if (this.appliedTheme) art.src = themePieceUrl(this.appliedTheme, piece.id);
+        if (this.appliedTheme) applyThemePieceArt(art, this.appliedTheme, piece.id);
         art.alt = '';
         art.draggable = false;
-        art.style.width = 'min(100cqw, 100cqh)';
-        art.style.left = '50%';
-        art.style.top = '50%';
         node.append(art);
         this.pieces.set(piece.id, node);
       }
@@ -213,8 +210,6 @@ export class MobileGameView {
 
   private renderNotes(): void {
     const clues = this.state!.puzzle.clues;
-    const heading = element('div', 'mobile-notes-heading');
-    heading.append(element('h2', '', 'Order notes'), element('span', '', 'Tap to enlarge'));
     const overview = element('div', 'mobile-clue-overview');
     const spatial = element('div', 'mobile-spatial-clues');
     const rest = clues.filter((clue) => clue.id !== 'anchor-map').length;
@@ -237,7 +232,7 @@ export class MobileGameView {
     });
     overview.classList.toggle('only-map', rest === 0);
     overview.append(spatial);
-    this.notes.replaceChildren(heading, overview);
+    this.notes.replaceChildren(overview);
   }
 
   private openClue(index: number): void {
@@ -310,11 +305,25 @@ export class MobileGameView {
         this.appliedTheme = theme;
         this.root.dataset.theme = theme;
         this.dialog.node.dataset.theme = theme;
+        const centers = themeBoardCenters[theme];
+        this.cells.forEach((cell, index) => {
+          const column = index % 3;
+          const row = Math.floor(index / 3);
+          cell.style.setProperty(
+            '--piece-x',
+            `${50 + (centers.columns[column]! - (20 + column * 30)) / 0.28}%`,
+          );
+          cell.style.setProperty(
+            '--piece-y',
+            `${50 + (centers.rows[row]! - (20 + row * 30)) / 0.28}%`,
+          );
+        });
         for (const [id, node] of this.pieces) {
-          node.querySelector<HTMLImageElement>('img')!.src = themePieceUrl(theme, id);
+          applyThemePieceArt(node.querySelector<HTMLImageElement>('img')!, theme, id);
         }
         this.root.querySelectorAll<HTMLElement>('[data-hint-piece]').forEach((node) => {
-          node.querySelector<HTMLImageElement>('img')!.src = themePieceUrl(
+          applyThemePieceArt(
+            node.querySelector<HTMLImageElement>('img')!,
             theme,
             node.dataset.hintPiece as PieceId,
           );
@@ -394,15 +403,21 @@ export class MobileGameView {
     if (changed) this.actions.presentationChanged(active);
     if (!active) return;
     const height = window.visualViewport?.height ?? window.innerHeight;
+    const width = window.visualViewport?.width ?? window.innerWidth;
+    const preview = forced && !this.media.matches;
+    const landscape = !preview && height <= 520 && Math.min(width, 1100) > height;
+    this.root.classList.toggle('is-landscape', landscape);
+    this.root.classList.toggle('is-short-landscape', landscape && height <= 360);
+    this.root.classList.toggle('is-compact', !landscape && height <= 620);
     this.root.style.setProperty('--mobile-height', `${height}px`);
     const count = this.state?.puzzle.clues.length ?? 7;
     this.root.style.setProperty(
       '--notes-height',
-      `${Math.max(128, Math.min(count > 5 ? 204 : 172, height * (count > 5 ? 0.24 : 0.2)))}px`,
+      `${Math.max(128, Math.min(count > 5 ? 190 : 152, height * (count > 5 ? 0.24 : 0.2) - 10))}px`,
     );
     this.root.style.setProperty(
       '--tray-height',
-      `${Math.max(144, Math.min(204, height * 0.22))}px`,
+      `${Math.max(148, Math.min(300, height * 0.27))}px`,
     );
     if (changed && this.state) this.update(this.state);
   }
