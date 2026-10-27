@@ -15,11 +15,18 @@ export default defineConfig({
   projects: [
     {
       name: 'desktop',
+      testIgnore: '**/mobile.spec.ts',
       use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } },
     },
     {
       name: 'mobile-landscape',
+      testIgnore: '**/mobile.spec.ts',
       use: { ...devices['Desktop Chrome'], viewport: { width: 844, height: 390 } },
+    },
+    {
+      name: 'mobile-touch',
+      testMatch: '**/mobile.spec.ts',
+      use: { ...devices['iPhone 13'], defaultBrowserType: 'chromium' },
     },
   ],
   webServer: {

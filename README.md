@@ -12,6 +12,8 @@ Bentoku is a finished client-side browser puzzle about arranging nine tiny kawai
 - Set effects and music volume independently in Cozy settings; the Effects switch remains available for quick muting.
 - Use `Tab` or arrow keys to move focus, `Enter`/`Space` to select or place, `U` to undo, `H` for help, `D` for difficulty, and `S` for settings.
 - Click the seed to copy a shareable link. Daily and random bentos work without a backend.
+- Phones have a separate furoshiki layout with all order sketches above the board. Tap any sketch to enlarge it; use taps or drag pieces between the board and the twelve family pockets. Rotation keeps the same game.
+- To preview the mobile presentation on a desktop browser, add `?layout=mobile` to the URL. The regular desktop canvas keeps its original composition.
 
 ## Development
 

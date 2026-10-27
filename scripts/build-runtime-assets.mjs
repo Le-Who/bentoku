@@ -8,6 +8,10 @@ const artSources = path.join(projectRoot, 'art');
 
 const jobs = [
   {
+    source: path.join(artSources, 'runtime-sources', 'mobile'),
+    target: path.join(publicAssets, 'mobile'),
+  },
+  {
     source: path.join(artSources, 'user-assets', 'pieces'),
     target: path.join(publicAssets, 'pieces'),
   },

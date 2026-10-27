@@ -26,6 +26,7 @@ import { CelebrationView } from '../views/CelebrationView';
 import { CluePanel } from '../views/CluePanel';
 import { InventoryPanel } from '../views/InventoryPanel';
 import { getPieceVisualLayout, PieceView } from '../views/PieceView';
+import { MobileGameView } from '../mobile/MobileGameView';
 
 interface ButtonSpec {
   x: number;
@@ -74,6 +75,8 @@ export class PuzzleScene extends Phaser.Scene {
   private petalTimer?: Phaser.Time.TimerEvent;
   private focusIndex = -1;
   private solved = false;
+  private mobile?: MobileGameView;
+  private completionTimer?: Phaser.Time.TimerEvent;
 
   constructor() {
     super('PuzzleScene');
@@ -84,6 +87,39 @@ export class PuzzleScene extends Phaser.Scene {
     this.settings = this.save.settings;
     this.audio = new AudioService(this, this.settings);
     this.music = new MusicService(this, musicAssets, this.settings.musicVolume);
+    this.mobile = new MobileGameView({
+      select: (id) => this.selectPiece(id),
+      activate: (cell) => this.activateSlot(cell),
+      drop: (id, cell) => {
+        if (this.solved || this.modal) return;
+        if (cell !== null) {
+          this.selectPiece(id, false, false);
+          this.placeSelected(cell);
+        } else if (this.placement.returnToTray(id)) {
+          this.selectedPiece = null;
+          this.pieces.forEach((view) => view.setSelected(false));
+          this.audio.play('piece_return');
+          this.afterBoardChange();
+        }
+      },
+      undo: () => this.undo(),
+      help: () => this.openHelp(),
+      settings: () => this.openSettings(),
+      difficulty: () => this.openDifficultySelect(),
+      daily: () => this.startDaily(),
+      next: () => this.startRandom(),
+      startMusic: () => this.music.start(),
+      closeModal: () => this.closeModal(),
+      presentationChanged: (active) => {
+        this.cancelLegacyPress();
+        this.input.enabled = !active;
+        if (this.input.keyboard) this.input.keyboard.enabled = !active;
+        this.cameras.main.visible = !active;
+        this.closeModal();
+        if (this.solved) this.showCompletion();
+      },
+    });
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.mobile?.destroy());
     const params = new URLSearchParams(window.location.search);
     const difficulty =
       parseDifficulty(params.get('difficulty')) ??
@@ -107,6 +143,9 @@ export class PuzzleScene extends Phaser.Scene {
   }
 
   private createPuzzle(seed: string, difficulty: Difficulty = this.settings.difficulty): void {
+    this.completionTimer?.remove(false);
+    this.completionTimer = undefined;
+    this.closeModal();
     this.settings = this.save.updateSettings({ difficulty });
     this.puzzle = this.generator.create(seed, difficulty);
     this.puzzleController = new PuzzleController(this.puzzle);
@@ -366,6 +405,7 @@ export class PuzzleScene extends Phaser.Scene {
       if (withSound) this.audio.play('piece_pick');
       this.announce(`${ANIMAL_LABELS[piece.animal]} ${FOOD_LABELS[piece.food]} selected.`);
     }
+    this.syncMobile();
   }
 
   private activateSlot(index: number): void {
@@ -387,6 +427,7 @@ export class PuzzleScene extends Phaser.Scene {
     }
     this.selectedPiece = null;
     this.pieces.forEach((view) => view.setSelected(false));
+    this.syncMobile();
   }
 
   private afterBoardChange(): void {
@@ -432,6 +473,38 @@ export class PuzzleScene extends Phaser.Scene {
     this.moveText.setText(
       `${filled} / 9 tucked in  ·  ${this.placement.moves} ${this.placement.moves === 1 ? 'move' : 'moves'}  ·  ${this.save.solvedCount} finished`,
     );
+    this.syncMobile();
+  }
+
+  private syncMobile(): void {
+    this.mobile?.update({
+      puzzle: this.puzzle,
+      board: this.placement.board,
+      selected: this.selectedPiece,
+      canUndo: this.placement.undo.canUndo,
+      solved: this.solved,
+      reducedMotion: this.settings.reducedMotion,
+    });
+  }
+
+  private cancelLegacyPress(): void {
+    const drag = this.dragging;
+    if (drag) {
+      this.tweens.killTweensOf(drag);
+      drag.setPosition(drag.home.x, drag.home.y).setDepth(drag.boardCell === null ? 100 : 120);
+      drag.settle(true);
+      if (drag.input) drag.input.dragState = 0;
+    }
+    if (drag || this.piecePress) {
+      this.selectedPiece = null;
+      this.pieces.forEach((view) => view.setSelected(false));
+    }
+    this.dragging = undefined;
+    this.piecePress = undefined;
+    this.bento?.slots.forEach((slot) => slot.setHighlighted(false));
+    this.input.manager.pointers.forEach((pointer) => this.input.setDragState(pointer, 0));
+    this.input.resetPointers();
+    if (this.puzzle) this.syncMobile();
   }
 
   private undo(): void {
@@ -450,6 +523,7 @@ export class PuzzleScene extends Phaser.Scene {
 
   private celebrate(): void {
     this.solved = true;
+    this.syncMobile();
     this.save.markSolved();
     this.audio.play('success', 100);
     this.announce('Bento complete!');
@@ -470,16 +544,30 @@ export class PuzzleScene extends Phaser.Scene {
       });
       this.tweens.add({ targets: this.bento, y: this.bento.y - 9, duration: 420, yoyo: true });
     }
-    this.time.delayedCall(this.settings.reducedMotion ? 150 : 850, () => {
-      this.modal = new CelebrationView(
-        this,
-        () => {
-          this.audio.play('ui_tap');
-          this.startRandom();
-        },
-        () => void this.copySeed(),
-      );
+    const completedPuzzle = this.puzzle;
+    this.completionTimer = this.time.delayedCall(this.settings.reducedMotion ? 150 : 850, () => {
+      this.completionTimer = undefined;
+      if (this.solved && this.puzzle === completedPuzzle) this.showCompletion();
     });
+  }
+
+  private showCompletion(): void {
+    this.closeModal();
+    if (this.mobile?.active) {
+      this.openModal('Bento complete!', 'A tiny tray of very happy friends.', [
+        { label: 'Copy seed', callback: () => void this.copySeed() },
+        { label: 'Another bento', callback: () => this.startRandom(), primary: true },
+      ]);
+      return;
+    }
+    this.modal = new CelebrationView(
+      this,
+      () => {
+        this.audio.play('ui_tap');
+        this.startRandom();
+      },
+      () => void this.copySeed(),
+    );
   }
 
   private sparkle(x: number, y: number): void {
@@ -620,6 +708,7 @@ export class PuzzleScene extends Phaser.Scene {
 
   private openSettings(withSound = true): void {
     if (this.solved) return;
+    this.syncMobile();
     this.openModal(
       'Cozy settings',
       'Tune the room to feel just right.',
@@ -716,6 +805,22 @@ export class PuzzleScene extends Phaser.Scene {
     sliders?: readonly SliderSpec[],
   ): void {
     this.closeModal();
+    if (this.mobile?.active) {
+      this.modal = this.add.container();
+      this.mobile.showDialog(
+        titleText,
+        bodyText,
+        actions.map((action) => ({
+          ...action,
+          callback: () => {
+            if (action.sound !== false) this.audio.play(action.sound ?? 'ui_tap');
+            action.callback();
+          },
+        })),
+        sliders,
+      );
+      return;
+    }
     const modal = this.add.container(800, 450).setDepth(2600);
     const shade = this.add.rectangle(0, 0, 1600, 900, COLORS.walnut, 0.26).setInteractive();
     const card = this.add.graphics();
@@ -792,6 +897,10 @@ export class PuzzleScene extends Phaser.Scene {
     if (!slot || !pieceId) return;
     const piece = this.pieces.get(pieceId)?.piece;
     if (!piece) return;
+    if (this.mobile?.active) {
+      this.mobile.showHint(pieceId, index);
+      return;
+    }
 
     const position = this.bento.slotWorldPosition(index);
     slot.setHighlighted(true, true);
@@ -905,6 +1014,7 @@ export class PuzzleScene extends Phaser.Scene {
   }
 
   private closeModal(): void {
+    this.mobile?.dialog.close();
     if (!this.modal) return;
     this.modal.destroy(true);
     this.modal = undefined;

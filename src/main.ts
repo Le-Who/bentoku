@@ -2,6 +2,9 @@ import Phaser from 'phaser';
 import { createGameConfig } from './game/config';
 import './styles.css';
 
+// Mobile now has its own presentation; never show the old rotation gate while assets load.
+document.getElementById('rotate-device')?.remove();
+
 const game = new Phaser.Game(createGameConfig());
 game.canvas.setAttribute('tabindex', '0');
 game.canvas.setAttribute('aria-label', 'Bentoku cozy bento deduction puzzle');

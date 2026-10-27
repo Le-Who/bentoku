@@ -3,6 +3,7 @@ import path from 'node:path';
 import sharp from 'sharp';
 
 const pairs = [
+  ['art/runtime-sources/mobile', 'public/assets/mobile'],
   ['art/user-assets/pieces', 'public/assets/pieces'],
   ['art/user-assets/clues', 'public/assets/clues'],
   ['art/user-assets/ui', 'public/assets/ui'],

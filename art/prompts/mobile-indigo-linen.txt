@@ -1,0 +1,10 @@
+Built-in image_gen prompt, 2026-10-27
+
+Use case: stylized-concept. Production texture asset for the existing Bentoku mobile game: one square, seamless, tileable flat material scan of beautifully woven Japanese indigo-blue cotton furoshiki fabric. Edge-to-edge consistent quiet medium-dark dusty indigo #536B8B, fine visible natural flax fibers with restrained subtle darker and lighter blue threads, matte diffuse even light, no direction or vignetting. Nearly uniform surface, delicate textile detail at close view that recedes at phone size. This is just a clean fabric texture to be tiled under independently rendered UI. No folds, no wrinkles, no knots, no objects, no food, no frame, no borders, no text, no patterns, no embroidery, no symbols, no gradient, no shadow. Crisp square 1024x1024 texture.
+
+Original generated raster: art/generations/mobile-furoshiki/indigo-linen-master.png (local art archive).
+Normalized, versioned source: art/runtime-sources/mobile/indigo-linen.png (256x256, Lanczos3 downsample).
+Runtime: public/assets/mobile/indigo-linen.webp (lossless, 87,200 bytes).
+Regenerate runtime from normalized source with pnpm assets:build.
+Verify normalized source and runtime pixels with pnpm assets:verify.
+Only the fabric material is generated; layout, stitching, controls, board cells and clue diagrams are code-rendered. Food and clue images are the existing production artwork.
