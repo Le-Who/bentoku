@@ -29,6 +29,39 @@
 .mobile-theme-loading[hidden] {
   display: none;
 }
+.mobile-theme-loading.is-retry-banner:not([hidden]) {
+  inset: calc(env(safe-area-inset-top, 0px) + 72px) 12px auto;
+  width: min(520px, calc(100vw - 24px));
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid #bac9b8;
+  border-radius: 14px;
+  box-shadow: 0 4px 16px #30453625;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.mobile-theme-loading.is-retry-banner p {
+  margin: 0;
+}
+.mobile-theme-loading.is-retry-banner .mobile-control {
+  min-height: 44px;
+  padding: 8px 10px;
+  font-size: 14px;
+}
+.mobile-theme-dismiss {
+  width: 36px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  font-size: 24px;
+  cursor: pointer;
+}
 .mobile-shell[data-theme='picnic'],
 .mobile-dialog[data-theme='picnic'] {
   --theme-ink: #653d32;

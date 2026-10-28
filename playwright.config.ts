@@ -20,7 +20,7 @@ export default defineConfig({
     },
     {
       name: 'mobile-landscape',
-      testIgnore: ['**/mobile.spec.ts', '**/themes.spec.ts'],
+      testIgnore: ['**/mobile.spec.ts', '**/themes.spec.ts', '**/desktop-themes.spec.ts'],
       use: { ...devices['Desktop Chrome'], viewport: { width: 844, height: 390 } },
     },
     {

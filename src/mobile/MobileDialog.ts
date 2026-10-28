@@ -12,6 +12,8 @@ export interface MobileSlider {
   onChange: (value: number) => void;
 }
 
+let dialogCount = 0;
+
 export function element<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   className: string,
@@ -34,6 +36,7 @@ export class MobileDialog {
   readonly node = element('dialog', 'mobile-dialog');
   private content = element('div', 'mobile-dialog-content');
   private onClose = (): void => {};
+  private readonly titleId = `bentoku-dialog-title-${++dialogCount}`;
 
   constructor() {
     this.node.append(this.content);
@@ -59,7 +62,7 @@ export class MobileDialog {
     this.onClose = onClose;
     this.content.replaceChildren();
     const heading = element('h2', 'mobile-dialog-title', title);
-    heading.id = 'mobile-dialog-title';
+    heading.id = this.titleId;
     this.node.setAttribute('aria-labelledby', heading.id);
     const close = button('×', 'mobile-dialog-close', onClose);
     close.setAttribute('aria-label', 'Close');
@@ -103,7 +106,7 @@ export class MobileDialog {
       const card = element('label', 'mobile-theme-card');
       const input = element('input', '');
       input.type = 'radio';
-      input.name = 'visual-theme';
+      input.name = `${this.titleId}-visual-theme`;
       input.value = theme.id;
       input.checked = theme.id === current;
       input.addEventListener('change', () => {

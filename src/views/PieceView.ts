@@ -1,25 +1,36 @@
 import Phaser from 'phaser';
 import { COLORS } from '../game/constants';
 import type { BentoPiece } from '../puzzle/types';
+import type { VisualTheme } from '../game/VisualTheme';
+import { desktopSkin, getThemedPieceVisualLayout, themeTexture } from '../game/DesktopTheme';
 
 export class PieceView extends Phaser.GameObjects.Container {
   readonly piece: BentoPiece;
   readonly sprite: Phaser.GameObjects.Image;
+  private readonly theme?: VisualTheme;
   private readonly shadow: Phaser.GameObjects.Ellipse;
   private readonly ring: Phaser.GameObjects.Graphics;
   home = new Phaser.Math.Vector2();
   boardCell: number | null = null;
 
-  constructor(scene: Phaser.Scene, piece: BentoPiece, x: number, y: number) {
+  constructor(scene: Phaser.Scene, piece: BentoPiece, x: number, y: number, theme?: VisualTheme) {
     super(scene, x, y);
     this.piece = piece;
+    this.theme = theme;
     this.shadow = scene.add.ellipse(3, 35, 84, 28, COLORS.shadow, 0.18);
     // The source canvas intentionally includes generous transparent safety
     // padding. Scale and optically center the whole canvas; never trim it.
-    const visual = VISUAL_LAYOUT[piece.id];
+    const visual = theme
+      ? getThemedPieceVisualLayout(theme, piece.id, 130)
+      : VISUAL_LAYOUT[piece.id];
     this.sprite = scene.add
-      .image(visual.x, visual.y, piece.textureKey)
+      .image(
+        visual.x,
+        visual.y,
+        theme ? themeTexture(theme, `piece_${piece.id}`) : piece.textureKey,
+      )
       .setDisplaySize(visual.size, visual.size);
+    if (theme) this.shadow.setVisible(false);
     this.ring = scene.add.graphics();
     this.add([this.shadow, this.sprite, this.ring]);
     this.setSize(116, 116);
@@ -31,14 +42,22 @@ export class PieceView extends Phaser.GameObjects.Container {
   setHome(x: number, y: number, boardCell: number | null): void {
     this.home.set(x, y);
     this.boardCell = boardCell;
+    if (this.theme) {
+      const visual = getThemedPieceVisualLayout(
+        this.theme,
+        this.piece.id,
+        boardCell === null ? 130 : 158,
+      );
+      this.sprite.setPosition(visual.x, visual.y).setDisplaySize(visual.size, visual.size);
+    }
   }
 
   setSelected(selected: boolean): void {
     this.ring.clear();
     if (!selected) return;
-    this.ring.lineStyle(5, COLORS.focus, 1);
+    this.ring.lineStyle(5, this.theme ? desktopSkin(this.theme).accent : COLORS.focus, 1);
     this.ring.strokeCircle(0, 0, 57);
-    this.ring.lineStyle(2, COLORS.milk, 0.9);
+    this.ring.lineStyle(2, this.theme ? desktopSkin(this.theme).paper : COLORS.milk, 0.9);
     this.ring.strokeCircle(0, 0, 62);
   }
 
@@ -48,7 +67,7 @@ export class PieceView extends Phaser.GameObjects.Container {
       return;
     }
     this.ring.clear();
-    this.ring.lineStyle(4, COLORS.sage, 1);
+    this.ring.lineStyle(4, this.theme ? desktopSkin(this.theme).accent : COLORS.sage, 1);
     this.ring.strokeRoundedRect(-60, -60, 120, 120, 24);
   }
 

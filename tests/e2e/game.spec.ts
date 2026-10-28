@@ -65,9 +65,11 @@ test('loads only WebP artwork without console errors', async ({ page }) => {
       .map((entry) => entry.name)
       .filter((name) => /\.(webp|png|jpe?g)(\?|$)/i.test(name)),
   );
-  // The favicon may be fetched by the browser process without appearing in
-  // the page resource timeline. Phaser itself preloads exactly 24 images.
-  expect(requests.length).toBe(24);
+  // Base art remains available as themed art is loaded on demand.
+  expect(requests.length).toBeGreaterThanOrEqual(24);
+  expect(requests.some((name) => name.includes('/assets/pieces/'))).toBe(true);
+  expect(requests.some((name) => name.includes('/assets/clues/'))).toBe(true);
+  expect(requests.some((name) => name.includes('/assets/environment/'))).toBe(true);
   expect(requests.every((name) => name.endsWith('.webp'))).toBe(true);
   expect(errors).toEqual([]);
   const musicRequests = await page.evaluate(() =>

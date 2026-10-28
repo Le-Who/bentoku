@@ -1,14 +1,25 @@
 import Phaser from 'phaser';
 import { COLORS } from '../game/constants';
+import type { VisualTheme } from '../game/VisualTheme';
+import { desktopSkin } from '../game/DesktopTheme';
 
 export class BentoSlot extends Phaser.GameObjects.Container {
   readonly index: number;
   readonly size: number;
   private readonly base: Phaser.GameObjects.Graphics;
+  private readonly theme?: VisualTheme;
   private readonly highlight: Phaser.GameObjects.Graphics;
 
-  constructor(scene: Phaser.Scene, index: number, x: number, y: number, size: number) {
+  constructor(
+    scene: Phaser.Scene,
+    index: number,
+    x: number,
+    y: number,
+    size: number,
+    theme?: VisualTheme,
+  ) {
     super(scene, x, y);
+    this.theme = theme;
     this.index = index;
     this.size = size;
     this.base = scene.add.graphics();
@@ -27,7 +38,8 @@ export class BentoSlot extends Phaser.GameObjects.Container {
   setHighlighted(active: boolean, reveal = false): void {
     this.highlight.clear();
     if (!active) return;
-    this.highlight.fillStyle(reveal ? COLORS.honey : COLORS.mint, reveal ? 0.34 : 0.26);
+    const accent = this.theme ? desktopSkin(this.theme).accent : undefined;
+    this.highlight.fillStyle(accent ?? (reveal ? COLORS.honey : COLORS.mint), reveal ? 0.34 : 0.26);
     this.highlight.fillRoundedRect(
       -this.size / 2 - 3,
       -this.size / 2 - 3,
@@ -35,7 +47,7 @@ export class BentoSlot extends Phaser.GameObjects.Container {
       this.size + 6,
       25,
     );
-    this.highlight.lineStyle(5, reveal ? COLORS.honey : COLORS.sage, 0.95);
+    this.highlight.lineStyle(5, accent ?? (reveal ? COLORS.honey : COLORS.sage), 0.95);
     this.highlight.strokeRoundedRect(
       -this.size / 2 - 3,
       -this.size / 2 - 3,

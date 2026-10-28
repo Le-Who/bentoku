@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Baseline lossless WebPs compared with lossy WebP encodes of the versioned source PNG/JPG images. File sizes and errors are measurements of this asset set, not guarantees for future source art.",
+  "description": "Baseline lossless WebPs compared with lossy WebP encodes of the versioned source PNG/JPG images. File sizes and errors are measurements of this asset set, not guarantees for future source art. The comparison totals retain the original 89-asset benchmark; later desktop assets use newly generated lossless WebP comparators.",
   "encoder": "sharp 0.34.5 / libwebp 1.6.0",
   "encoding": {
     "quality": 90,
@@ -661,6 +661,133 @@
       "losslessBytes": 61664,
       "encodedBytes": 20562,
       "visibleWeightedMae": 3.434
+    },
+    {
+      "source": "art/runtime-sources/themes/picnic/desktop-background.png",
+      "runtime": "public/assets/themes/picnic/desktop-background.webp",
+      "losslessBytes": 2121602,
+      "encodedBytes": 516304,
+      "visibleWeightedMae": 2.492
+    },
+    {
+      "source": "art/runtime-sources/themes/porcelain/desktop-background.png",
+      "runtime": "public/assets/themes/porcelain/desktop-background.webp",
+      "losslessBytes": 961734,
+      "encodedBytes": 32680,
+      "visibleWeightedMae": 0.831
+    },
+    {
+      "source": "art/runtime-sources/themes/maple/desktop-background.png",
+      "runtime": "public/assets/themes/maple/desktop-background.webp",
+      "losslessBytes": 1397674,
+      "encodedBytes": 213068,
+      "visibleWeightedMae": 1.591
+    },
+    {
+      "source": "art/runtime-sources/themes/picnic/desktop-tray.png",
+      "runtime": "public/assets/themes/picnic/desktop-tray.webp",
+      "losslessBytes": 1368780,
+      "encodedBytes": 310942,
+      "visibleWeightedMae": 2.088
+    },
+    {
+      "source": "art/runtime-sources/themes/picnic/desktop-panel.png",
+      "runtime": "public/assets/themes/picnic/desktop-panel.webp",
+      "losslessBytes": 1152322,
+      "encodedBytes": 227952,
+      "visibleWeightedMae": 1.829
+    },
+    {
+      "source": "art/runtime-sources/themes/porcelain/desktop-tray.png",
+      "runtime": "public/assets/themes/porcelain/desktop-tray.webp",
+      "losslessBytes": 688278,
+      "encodedBytes": 59320,
+      "visibleWeightedMae": 0.809
+    },
+    {
+      "source": "art/runtime-sources/themes/porcelain/desktop-panel.png",
+      "runtime": "public/assets/themes/porcelain/desktop-panel.webp",
+      "losslessBytes": 672784,
+      "encodedBytes": 63650,
+      "visibleWeightedMae": 0.999
+    },
+    {
+      "source": "art/runtime-sources/themes/maple/desktop-tray.png",
+      "runtime": "public/assets/themes/maple/desktop-tray.webp",
+      "losslessBytes": 1583370,
+      "encodedBytes": 505568,
+      "visibleWeightedMae": 2.635
+    },
+    {
+      "source": "art/runtime-sources/themes/maple/desktop-panel.png",
+      "runtime": "public/assets/themes/maple/desktop-panel.webp",
+      "losslessBytes": 1197776,
+      "encodedBytes": 261862,
+      "visibleWeightedMae": 1.867
     }
-  ]
+  ],
+  "desktopBackgroundComparison": {
+    "description": "Desktop backgrounds were added after the original 89-asset benchmark; their lossless byte sizes are newly encoded from their versioned PNGs and are not part of the original benchmark totals.",
+    "files": [
+      {
+        "source": "art/runtime-sources/themes/picnic/desktop-background.png",
+        "losslessBytes": 2121602,
+        "encodedBytes": 516304,
+        "visibleWeightedMae": 2.492
+      },
+      {
+        "source": "art/runtime-sources/themes/porcelain/desktop-background.png",
+        "losslessBytes": 961734,
+        "encodedBytes": 32680,
+        "visibleWeightedMae": 0.831
+      },
+      {
+        "source": "art/runtime-sources/themes/maple/desktop-background.png",
+        "losslessBytes": 1397674,
+        "encodedBytes": 213068,
+        "visibleWeightedMae": 1.591
+      }
+    ]
+  },
+  "desktopMaterialComparison": {
+    "description": "Six portrait desktop materials were added after the original 89-asset benchmark; their lossless byte sizes are newly encoded from their versioned PNGs and are not included in the original benchmark totals.",
+    "files": [
+      {
+        "source": "art/runtime-sources/themes/picnic/desktop-tray.png",
+        "losslessBytes": 1368780,
+        "encodedBytes": 310942,
+        "visibleWeightedMae": 2.088
+      },
+      {
+        "source": "art/runtime-sources/themes/picnic/desktop-panel.png",
+        "losslessBytes": 1152322,
+        "encodedBytes": 227952,
+        "visibleWeightedMae": 1.829
+      },
+      {
+        "source": "art/runtime-sources/themes/porcelain/desktop-tray.png",
+        "losslessBytes": 688278,
+        "encodedBytes": 59320,
+        "visibleWeightedMae": 0.809
+      },
+      {
+        "source": "art/runtime-sources/themes/porcelain/desktop-panel.png",
+        "losslessBytes": 672784,
+        "encodedBytes": 63650,
+        "visibleWeightedMae": 0.999
+      },
+      {
+        "source": "art/runtime-sources/themes/maple/desktop-tray.png",
+        "losslessBytes": 1583370,
+        "encodedBytes": 505568,
+        "visibleWeightedMae": 2.635
+      },
+      {
+        "source": "art/runtime-sources/themes/maple/desktop-panel.png",
+        "losslessBytes": 1197776,
+        "encodedBytes": 261862,
+        "visibleWeightedMae": 1.867
+      }
+    ]
+  }
 }

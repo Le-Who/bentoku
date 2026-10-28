@@ -1,5 +1,8 @@
 import Phaser from 'phaser';
 import { BentoSlot } from './BentoSlot';
+import type { VisualTheme } from '../game/VisualTheme';
+import { themeTexture } from '../game/DesktopTheme';
+import { themeBoardCenters } from '../mobile/ThemeAssets';
 
 export class BentoBoard extends Phaser.GameObjects.Container {
   readonly slots: BentoSlot[] = [];
@@ -7,16 +10,22 @@ export class BentoBoard extends Phaser.GameObjects.Container {
   private readonly frame: Phaser.GameObjects.Graphics;
   private readonly restingX: number;
 
-  constructor(scene: Phaser.Scene, x: number, y: number) {
+  constructor(scene: Phaser.Scene, x: number, y: number, theme?: VisualTheme) {
     super(scene, x, y);
     this.restingX = x;
     scene.add.existing(this);
     this.frame = scene.add.graphics();
     this.add(this.frame);
     this.drawFrame();
+    if (theme)
+      this.add(scene.add.image(0, 0, themeTexture(theme, 'board')).setDisplaySize(540, 540));
 
-    const columnOffsets = [-160, 5, 170];
-    const rowOffsets = [-185, -3, 186];
+    const columnOffsets = theme
+      ? themeBoardCenters[theme].columns.map((v) => (v / 100 - 0.5) * 540)
+      : [-160, 5, 170];
+    const rowOffsets = theme
+      ? themeBoardCenters[theme].rows.map((v) => (v / 100 - 0.5) * 540)
+      : [-185, -3, 186];
     for (let index = 0; index < 9; index += 1) {
       const column = index % 3;
       const row = Math.floor(index / 3);
@@ -26,6 +35,7 @@ export class BentoBoard extends Phaser.GameObjects.Container {
         columnOffsets[column]!,
         rowOffsets[row]!,
         this.slotSize,
+        theme,
       );
       this.add(slot);
       this.slots.push(slot);

@@ -1,0 +1,64 @@
+{
+  "generator": "Built-in image_gen tool",
+  "transparentBackground": true,
+  "normalization": "Uniform contain scaling to a transparent 836×1360 tray or 780×1360 panel canvas; no nonuniform stretching.",
+  "entries": [
+    {
+      "theme": "picnic",
+      "type": "tray",
+      "references": [
+        "art/runtime-sources/themes/picnic/tray.png",
+        "art/references/mobile-themes/picnic.png"
+      ],
+      "rawGeneratedImage": "C:/Users/user/.codex/generated_images/01a18011-902f-7591-901f-3b61eb8e7e47/exec-92bc70af-459c-4705-9cab-3e6e75dc9e3e.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent production game UI artwork. The first input is the existing tray material and the second input is the existing theme reference. Create a NEW portrait-oriented tray for desktop, as a single front-facing top-down object on a truly transparent background. The object has a tall rectangular silhouette roughly 0.60 times as wide as tall, nearly fills the image with a small transparent margin on all sides, and has a clean roomy empty central surface for separate interactive game elements. Match the reference material and lighting exactly: pink strawberry gingham paper craft, soft blush pink textured paper tray with gently ruffled and torn pale pink rim and naturally proportioned small strawberries and flowers tucked at corners. Keep texture, decorative details and corners naturally proportioned, never stretched; redesign the object to portrait dimensions, do not rotate or stretch the landscape original. No wells, compartments, food, icons, game pieces, grid, writing, labels, buttons, or logos. Crisp complete silhouette, no cropping."
+    },
+    {
+      "theme": "picnic",
+      "type": "panel",
+      "references": [
+        "art/runtime-sources/themes/picnic/panel.png",
+        "art/references/mobile-themes/picnic.png"
+      ],
+      "rawGeneratedImage": "C:/Users/user/.codex/generated_images/01a18011-902f-7591-901f-3b61eb8e7e47/exec-b103bc72-07b7-46e0-ab1d-84662f0456df.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent production game UI artwork. The first input is the existing panel material and the second input is the existing theme reference. Create a NEW portrait-oriented panel for desktop, as a single front-facing top-down object on a truly transparent background. The object has a tall rectangular silhouette roughly 0.60 times as wide as tall, nearly fills the image with a small transparent margin on all sides, and has a clean roomy empty central surface for separate interactive game elements. Match the reference material and lighting exactly: warm cream handmade paper card with softly torn edges and naturally proportioned tiny pink and sage flowers at corners. Keep texture, decorative details and corners naturally proportioned, never stretched; redesign the object to portrait dimensions, do not rotate or stretch the landscape original. No wells, compartments, food, icons, game pieces, grid, writing, labels, buttons, or logos. Crisp complete silhouette, no cropping."
+    },
+    {
+      "theme": "porcelain",
+      "type": "tray",
+      "references": [
+        "art/runtime-sources/themes/porcelain/tray.png",
+        "art/references/mobile-themes/porcelain.png"
+      ],
+      "rawGeneratedImage": "C:/Users/user/.codex/generated_images/01a18011-902f-7591-901f-3b61eb8e7e47/exec-4426fda3-b994-49e3-b3c7-c0d515273160.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent production game UI artwork. The first input is the existing tray material and the second input is the existing theme reference. Create a NEW portrait-oriented tray for desktop, as a single front-facing top-down object on a truly transparent background. The object has a tall rectangular silhouette roughly 0.60 times as wide as tall, nearly fills the image with a small transparent margin on all sides, and has a clean roomy empty central surface for separate interactive game elements. Match the reference material and lighting exactly: milk-white glazed ceramic rectangular tray with a slender pale sage rim, soft rounded corners and gentle dimensional shading. Keep texture, decorative details and corners naturally proportioned, never stretched; redesign the object to portrait dimensions, do not rotate or stretch the landscape original. No wells, compartments, food, icons, game pieces, grid, writing, labels, buttons, or logos. Crisp complete silhouette, no cropping."
+    },
+    {
+      "theme": "porcelain",
+      "type": "panel",
+      "references": [
+        "art/runtime-sources/themes/porcelain/panel.png",
+        "art/references/mobile-themes/porcelain.png"
+      ],
+      "rawGeneratedImage": "C:/Users/user/.codex/generated_images/01a18011-902f-7591-901f-3b61eb8e7e47/exec-ae70e34f-4fb1-4911-9c30-61c30218889f.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent production game UI artwork. The first input is the existing panel material and the second input is the existing theme reference. Create a NEW portrait-oriented panel for desktop, as a single front-facing top-down object on a truly transparent background. The object has a tall rectangular silhouette roughly 0.60 times as wide as tall, nearly fills the image with a small transparent margin on all sides, and has a clean roomy empty central surface for separate interactive game elements. Match the reference material and lighting exactly: milk-white glazed ceramic rectangular panel with a slender pale sage rim, soft rounded corners and gentle dimensional shading. Keep texture, decorative details and corners naturally proportioned, never stretched; redesign the object to portrait dimensions, do not rotate or stretch the landscape original. No wells, compartments, food, icons, game pieces, grid, writing, labels, buttons, or logos. Crisp complete silhouette, no cropping."
+    },
+    {
+      "theme": "maple",
+      "type": "tray",
+      "references": [
+        "art/runtime-sources/themes/maple/tray.png",
+        "art/references/mobile-themes/maple.png"
+      ],
+      "rawGeneratedImage": "C:/Users/user/.codex/generated_images/01a18011-902f-7591-901f-3b61eb8e7e47/exec-9a618ed2-3818-475b-92e4-13ca721a6a85.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent production game UI artwork. The first input is the existing tray material and the second input is the existing theme reference. Create a NEW portrait-oriented tray for desktop, as a single front-facing top-down object on a truly transparent background. The object has a tall rectangular silhouette roughly 0.60 times as wide as tall, nearly fills the image with a small transparent margin on all sides, and has a clean roomy empty central surface for separate interactive game elements. Match the reference material and lighting exactly: warm peach woven linen tray, plush rounded padded fabric rim and naturally scaled fine fabric weave. Keep texture, decorative details and corners naturally proportioned, never stretched; redesign the object to portrait dimensions, do not rotate or stretch the landscape original. No wells, compartments, food, icons, game pieces, grid, writing, labels, buttons, or logos. Crisp complete silhouette, no cropping."
+    },
+    {
+      "theme": "maple",
+      "type": "panel",
+      "references": ["art/runtime-sources/themes/maple/panel.png"],
+      "rawGeneratedImage": "C:/Users/user/.codex/generated_images/01a18011-902f-7591-901f-3b61eb8e7e47/exec-e464889d-e252-4d23-9f22-016c76e24b6e.png",
+      "prompt": "Create an isolated transparent cutout UI asset, no background at all. Redesign the provided landscape card as a tall portrait rectangular card with width 0.57 times height. Same pale sage cream handmade paper with softly rounded corners and small natural green leaf sprigs only in two opposite corners; large empty center. The entire card and its soft shadow must be surrounded by fully transparent pixels. No scene, tabletop, backdrop, board, text, or additional objects. Match reference material and lighting."
+    }
+  ]
+}

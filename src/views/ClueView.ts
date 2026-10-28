@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { COLORS, FONT_DISPLAY } from '../game/constants';
 import type { CluePattern } from '../puzzle/types';
+import type { VisualTheme } from '../game/VisualTheme';
+import { desktopSkin } from '../game/DesktopTheme';
 
 export class ClueView extends Phaser.GameObjects.Container {
   readonly clue: CluePattern;
@@ -12,29 +14,34 @@ export class ClueView extends Phaser.GameObjects.Container {
     y: number,
     maxWidth: number,
     compact = false,
+    theme?: VisualTheme,
   ) {
     super(scene, x, y);
     this.clue = clue;
     scene.add.existing(this);
     const isAnchor = clue.width === 3 && clue.height === 3;
-    const cellSize = isAnchor ? 48 : Math.min(44, (maxWidth - 24) / clue.width);
+    const cellSize = isAnchor ? 48 : Math.min(theme ? 38 : 44, (maxWidth - 24) / clue.width);
     const gridWidth = cellSize * clue.width;
     const gridHeight = cellSize * clue.height;
     const padTop = compact ? 12 : 16;
     const cardWidth = maxWidth;
     const cardHeight = gridHeight + padTop + (compact ? 10 : 14);
 
+    const skin = theme ? desktopSkin(theme) : undefined;
     const card = scene.add.graphics();
-    card.fillStyle(isAnchor ? 0xf3f1d9 : COLORS.milk, isAnchor ? 0.72 : 0.67);
+    card.fillStyle(
+      skin?.paper ?? (isAnchor ? 0xf3f1d9 : COLORS.milk),
+      theme ? 0.86 : isAnchor ? 0.72 : 0.67,
+    );
     card.fillRoundedRect(-cardWidth / 2, -cardHeight / 2, cardWidth, cardHeight, 16);
-    card.lineStyle(2, COLORS.ink, 0.15);
+    card.lineStyle(2, skin?.ink ?? COLORS.ink, 0.15);
     card.strokeRoundedRect(-cardWidth / 2, -cardHeight / 2, cardWidth, cardHeight, 16);
     this.add(card);
 
     const originX = -gridWidth / 2;
     const originY = -cardHeight / 2 + padTop;
     const graphics = scene.add.graphics();
-    graphics.lineStyle(2, COLORS.ink, 0.68);
+    graphics.lineStyle(2, skin?.ink ?? COLORS.ink, 0.68);
     for (let column = 0; column <= clue.width; column += 1) {
       const wobble = column % 2 === 0 ? 0 : 0.7;
       graphics.lineBetween(
@@ -61,9 +68,9 @@ export class ClueView extends Phaser.GameObjects.Container {
       if (!cell.animal && !cell.food) {
         const wildcard = scene.add
           .text(centerX, centerY, '·', {
-            fontFamily: FONT_DISPLAY,
+            fontFamily: skin?.font ?? FONT_DISPLAY,
             fontSize: `${Math.round(cellSize * 0.52)}px`,
-            color: '#8e766f',
+            color: skin?.mutedCss ?? '#8e766f',
           })
           .setOrigin(0.5);
         this.add(wildcard);
@@ -83,7 +90,7 @@ export class ClueView extends Phaser.GameObjects.Container {
         fitInside(animal, cellSize * 0.57);
         fitInside(food, cellSize * 0.53);
         const slash = scene.add.graphics();
-        slash.lineStyle(1.5, COLORS.ink, 0.52);
+        slash.lineStyle(1.5, skin?.ink ?? COLORS.ink, 0.52);
         slash.lineBetween(
           centerX - cellSize * 0.32,
           centerY + cellSize * 0.32,

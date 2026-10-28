@@ -37,6 +37,7 @@ interface MobileActions {
   closeModal: () => void;
   presentationChanged: (active: boolean) => void;
   changeTheme: (theme: VisualTheme) => void;
+  themeSelectionStarted: () => void;
 }
 
 interface Press {
@@ -77,6 +78,8 @@ export class MobileGameView {
   private destroyed = false;
   private themeSelection = 0;
   private pendingTheme?: VisualTheme;
+  private failedTheme?: VisualTheme;
+  private themeErrorDismissed = false;
   private themeLoad = 0;
   private loading = element('div', 'mobile-theme-loading', 'Packing your bento…');
   private notes = element('section', 'mobile-notes');
@@ -270,6 +273,7 @@ export class MobileGameView {
 
   showThemePicker(current: VisualTheme): void {
     this.dialog.addThemePicker(this.pendingTheme ?? current, (theme) => {
+      this.actions.themeSelectionStarted();
       const selection = ++this.themeSelection;
       this.pendingTheme = theme;
       this.dialog.themeStatus('Loading this look…');
@@ -277,6 +281,7 @@ export class MobileGameView {
         .then(() => {
           if (this.destroyed || this.themeSelection !== selection) return;
           this.pendingTheme = undefined;
+          this.failedTheme = undefined;
           this.actions.changeTheme(theme);
           this.dialog.themeStatus('', theme);
         })
@@ -292,10 +297,27 @@ export class MobileGameView {
     if (this.pendingTheme) this.dialog.themeStatus('Loading this look…');
   }
 
+  cancelPendingThemeSelection(): void {
+    ++this.themeSelection;
+    this.pendingTheme = undefined;
+    // A fallback from the first mobile load must not replace a later desktop choice.
+    // Clearing the request also allows that first mobile skin to retry on return.
+    if (!this.appliedTheme || this.failedTheme) {
+      ++this.themeLoad;
+      this.requestedTheme = undefined;
+      this.failedTheme = undefined;
+    }
+    if (this.state) this.dialog.themeStatus('', this.state.theme);
+  }
+
   private prepareTheme(theme: VisualTheme): void {
-    if (this.requestedTheme === theme) return;
+    if (this.requestedTheme === theme || this.failedTheme === theme) return;
     this.cancelDrag();
     this.requestedTheme = theme;
+    this.failedTheme = undefined;
+    this.themeErrorDismissed = false;
+    this.loading.classList.remove('is-retry-banner');
+    this.loading.textContent = 'Packing your bento…';
     const load = ++this.themeLoad;
     this.loading.hidden = Boolean(this.appliedTheme) || !this.active;
     this.root.classList.toggle('is-loading-theme', !this.appliedTheme);
@@ -334,6 +356,26 @@ export class MobileGameView {
       .catch(() => {
         if (this.destroyed || this.themeLoad !== load || this.requestedTheme !== theme) return;
         if (!this.appliedTheme) void this.fallbackTheme(theme, load);
+        else {
+          this.requestedTheme = undefined;
+          this.failedTheme = theme;
+          const retry = button('Try again', 'mobile-control', () => {
+            this.failedTheme = undefined;
+            this.prepareTheme(this.state!.theme);
+          });
+          const dismiss = button('×', 'mobile-theme-dismiss', () => {
+            this.themeErrorDismissed = true;
+            this.loading.hidden = true;
+          });
+          dismiss.setAttribute('aria-label', 'Dismiss artwork message');
+          this.loading.replaceChildren(
+            element('p', '', 'This look could not load. Your bento is safe.'),
+            retry,
+            dismiss,
+          );
+          this.loading.classList.add('is-retry-banner');
+          this.loading.hidden = !this.active;
+        }
       });
   }
 
@@ -397,7 +439,8 @@ export class MobileGameView {
     }
     this.active = active;
     this.root.hidden = !active;
-    this.loading.hidden = !active || Boolean(this.appliedTheme);
+    this.loading.hidden =
+      !active || (Boolean(this.appliedTheme) && (!this.failedTheme || this.themeErrorDismissed));
     document.documentElement.classList.toggle('mobile-layout', active);
     document.getElementById('game')?.setAttribute('aria-hidden', String(active));
     if (changed) this.actions.presentationChanged(active);

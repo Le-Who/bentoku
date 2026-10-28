@@ -2,14 +2,49 @@ import Phaser from 'phaser';
 import { COLORS, FONT_DISPLAY } from '../game/constants';
 import type { CluePattern } from '../puzzle/types';
 import { ClueView } from './ClueView';
+import type { VisualTheme } from '../game/VisualTheme';
+import { desktopPortraitMaterial, desktopSkin } from '../game/DesktopTheme';
 
 export class CluePanel extends Phaser.GameObjects.Container {
   readonly width = 390;
   readonly height = 730;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, clues: readonly CluePattern[]) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    clues: readonly CluePattern[],
+    theme?: VisualTheme,
+  ) {
     super(scene, x, y);
     scene.add.existing(this);
+
+    if (theme) {
+      this.add(desktopPortraitMaterial(scene, theme, 'panel', 390, 680));
+      const anchor = clues.find((clue) => clue.id === 'anchor-map');
+      const spatial = clues.filter((clue) => clue.id !== 'anchor-map').slice(0, 6);
+      if (anchor) this.add(new ClueView(scene, anchor, 0, -211, 280, true, theme));
+      spatial.forEach((clue, index) => {
+        const row = Math.floor(index / 2);
+        const count = Math.min(2, spatial.length - row * 2);
+        const xPosition = count === 1 ? 0 : -74 + (index % 2) * 148;
+        this.add(new ClueView(scene, clue, xPosition, -54 + row * 142, 142, true, theme));
+      });
+      if (spatial.length === 0) {
+        this.add(
+          scene.add
+            .text(0, 60, 'The café map has every detail you need.', {
+              fontFamily: desktopSkin(theme).font,
+              fontSize: '16px',
+              color: desktopSkin(theme).inkCss,
+              align: 'center',
+              wordWrap: { width: 260 },
+            })
+            .setOrigin(0.5),
+        );
+      }
+      return;
+    }
 
     const title = scene.add
       .text(0, -300, 'ORDER NOTES', {

@@ -27,6 +27,17 @@ import { CluePanel } from '../views/CluePanel';
 import { InventoryPanel } from '../views/InventoryPanel';
 import { getPieceVisualLayout, PieceView } from '../views/PieceView';
 import { MobileGameView } from '../mobile/MobileGameView';
+import { MobileDialog } from '../mobile/MobileDialog';
+import { loadDesktopTheme } from '../game/DesktopThemeLoader';
+import {
+  addThemedMaterial,
+  desktopSkin,
+  drawDesktopSurface,
+  getThemedPieceVisualLayout,
+  themeTexture,
+} from '../game/DesktopTheme';
+import type { VisualTheme } from '../game/VisualTheme';
+import '../desktop-settings.css';
 
 interface ButtonSpec {
   x: number;
@@ -77,14 +88,34 @@ export class PuzzleScene extends Phaser.Scene {
   private solved = false;
   private mobile?: MobileGameView;
   private completionTimer?: Phaser.Time.TimerEvent;
+  private desktopTheme?: VisualTheme;
+  private desktopDialog!: MobileDialog;
+  private desktopThemeSelection = 0;
+  private pendingDesktopTheme?: VisualTheme;
+  private desktopRequest = 0;
+  private desktopRequestedTheme?: VisualTheme;
+  private desktopReadyTheme?: VisualTheme;
+  private destroyed = false;
+  private desktopLoading!: HTMLDivElement;
 
   constructor() {
     super('PuzzleScene');
   }
 
-  create(): void {
+  create(data?: { desktopTheme?: VisualTheme }): void {
+    this.destroyed = false;
     this.save = new SaveService();
     this.settings = this.save.settings;
+    this.desktopTheme = data?.desktopTheme;
+    if (this.desktopTheme) document.documentElement.dataset.desktopTheme = this.desktopTheme;
+    this.desktopDialog = new MobileDialog();
+    this.desktopDialog.node.classList.add('desktop-settings-dialog');
+    this.desktopLoading = document.createElement('div');
+    this.desktopLoading.className = 'desktop-theme-loading';
+    this.desktopLoading.setAttribute('role', 'status');
+    this.desktopLoading.textContent = 'Packing your bento…';
+    this.desktopLoading.hidden = true;
+    document.getElementById('app')!.append(this.desktopLoading);
     this.audio = new AudioService(this, this.settings);
     this.music = new MusicService(this, musicAssets, this.settings.musicVolume);
     this.mobile = new MobileGameView({
@@ -108,9 +139,21 @@ export class PuzzleScene extends Phaser.Scene {
       difficulty: () => this.openDifficultySelect(),
       daily: () => this.startDaily(),
       next: () => this.startRandom(),
+      themeSelectionStarted: () => {
+        ++this.desktopThemeSelection;
+        ++this.desktopRequest;
+        this.pendingDesktopTheme = undefined;
+        this.desktopRequestedTheme = undefined;
+        this.desktopReadyTheme = undefined;
+      },
       changeTheme: (visualTheme) => {
+        ++this.desktopThemeSelection;
+        ++this.desktopRequest;
+        this.pendingDesktopTheme = undefined;
+        this.desktopRequestedTheme = undefined;
         this.settings = this.save.updateSettings({ visualTheme });
         this.syncMobile();
+        if (!this.mobile?.active) void this.prepareDesktopTheme(visualTheme);
       },
       startMusic: () => this.music.start(),
       closeModal: () => this.closeModal(),
@@ -120,10 +163,17 @@ export class PuzzleScene extends Phaser.Scene {
         if (this.input.keyboard) this.input.keyboard.enabled = !active;
         this.cameras.main.visible = !active;
         this.closeModal();
+        this.desktopLoading.hidden = active || Boolean(this.desktopTheme);
+        if (!active) void this.prepareDesktopTheme(this.settings.visualTheme);
         if (this.solved) this.showCompletion();
       },
     });
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.mobile?.destroy());
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.destroyed = true;
+      this.mobile?.destroy();
+      this.desktopDialog.destroy();
+      this.desktopLoading.remove();
+    });
     const params = new URLSearchParams(window.location.search);
     const difficulty =
       parseDifficulty(params.get('difficulty')) ??
@@ -133,6 +183,8 @@ export class PuzzleScene extends Phaser.Scene {
       this.save.currentDifficulty === difficulty ? this.save.currentSeed : undefined;
     const seed = params.get('seed') ?? savedSeed ?? createRandomSeed();
     this.createPuzzle(seed, difficulty);
+    if (!this.mobile.active && !this.desktopTheme)
+      void this.prepareDesktopTheme(this.settings.visualTheme);
     this.bindInput();
     this.schedulePetalDrift(true);
     this.time.addEvent({
@@ -163,39 +215,45 @@ export class PuzzleScene extends Phaser.Scene {
   }
 
   private renderScene(): void {
+    const settingsOpen = this.desktopDialog.node.open;
+    const dialogOpen = settingsOpen || this.mobile?.dialog.node.open;
+    const skin = this.desktopTheme ? desktopSkin(this.desktopTheme) : undefined;
     this.children.removeAll(true);
     this.pieces.clear();
     this.modal = undefined;
 
-    this.add.image(800, 450, 'gameplay_plate').setDisplaySize(1600, 900);
-    this.add
-      .text(54, 38, 'Bentoku', {
-        fontFamily: FONT_DISPLAY,
-        fontSize: '42px',
-        fontStyle: 'bold',
-        color: '#65483f',
-      })
-      .setOrigin(0, 0.5);
-    this.add
-      .text(56, 74, 'a tiny logic lunch', {
-        fontFamily: FONT_BODY,
-        fontSize: '15px',
-        color: '#765149',
-        letterSpacing: 2,
-        stroke: '#f3d5bf',
-        strokeThickness: 1,
-      })
-      .setOrigin(0, 0.5);
+    if (this.desktopTheme) drawDesktopSurface(this, this.desktopTheme);
+    else {
+      this.add.image(800, 450, 'gameplay_plate').setDisplaySize(1600, 900);
+      this.add
+        .text(54, 38, 'Bentoku', {
+          fontFamily: FONT_DISPLAY,
+          fontSize: '42px',
+          fontStyle: 'bold',
+          color: '#65483f',
+        })
+        .setOrigin(0, 0.5);
+      this.add
+        .text(56, 74, 'a tiny logic lunch', {
+          fontFamily: FONT_BODY,
+          fontSize: '15px',
+          color: '#765149',
+          letterSpacing: 2,
+          stroke: '#f3d5bf',
+          strokeThickness: 1,
+        })
+        .setOrigin(0, 0.5);
+    }
 
-    this.inventory = new InventoryPanel(this, 285, 465);
-    this.bento = new BentoBoard(this, 790, 429);
+    this.inventory = new InventoryPanel(this, 285, 465, this.desktopTheme);
+    this.bento = new BentoBoard(this, 790, 429, this.desktopTheme);
     // Center the dynamic notes on the illustrated paper, whose visual center
     // sits left of the right-hand layout column.
-    new CluePanel(this, 1332, 485, this.puzzle.clues);
+    new CluePanel(this, 1332, 485, this.puzzle.clues, this.desktopTheme);
 
     this.puzzle.pieces.forEach((piece, index) => {
       const position = this.inventory.trayPosition(index);
-      const view = new PieceView(this, piece, position.x, position.y);
+      const view = new PieceView(this, piece, position.x, position.y, this.desktopTheme);
       this.pieces.set(piece.id, view);
       this.bindPiece(view);
     });
@@ -209,18 +267,18 @@ export class PuzzleScene extends Phaser.Scene {
 
     this.seedText = this.add
       .text(790, 54, this.puzzle.seed, {
-        fontFamily: FONT_BODY,
+        fontFamily: skin?.font ?? FONT_BODY,
         fontSize: '17px',
         fontStyle: 'bold',
-        color: '#74594f',
-        backgroundColor: '#fff8e9aa',
+        color: skin?.inkCss ?? '#74594f',
+        backgroundColor: skin?.paperCss ?? '#fff8e9aa',
         padding: { x: 16, y: 9 },
       })
       .setOrigin(0.5)
       .setInteractive({ useHandCursor: true });
     this.seedText.on('pointerdown', () => void this.copySeed());
     this.seedText.on('pointerover', () => this.seedText.setColor('#c66f69'));
-    this.seedText.on('pointerout', () => this.seedText.setColor('#74594f'));
+    this.seedText.on('pointerout', () => this.seedText.setColor(skin?.inkCss ?? '#74594f'));
 
     this.makeButton({
       x: 1034,
@@ -268,13 +326,20 @@ export class PuzzleScene extends Phaser.Scene {
 
     this.moveText = this.add
       .text(790, 836, '', {
-        fontFamily: FONT_BODY,
+        fontFamily: skin?.font ?? FONT_BODY,
         fontSize: '17px',
-        color: '#8a6a60',
+        color: skin?.mutedCss ?? '#8a6a60',
       })
       .setOrigin(0.5);
     this.updatePiecePositions(false);
+    if (this.selectedPiece) this.pieces.get(this.selectedPiece)?.setSelected(true);
     this.updateStatus();
+    if (dialogOpen) {
+      this.modal = this.add.container();
+    }
+    if (settingsOpen) {
+      this.desktopDialog.node.dataset.theme = this.desktopTheme ?? this.settings.visualTheme;
+    }
   }
 
   private bindPiece(view: PieceView): void {
@@ -492,6 +557,84 @@ export class PuzzleScene extends Phaser.Scene {
     });
   }
 
+  private applyDesktopTheme(theme: VisualTheme): void {
+    if (this.modal && !this.desktopDialog.node.open && !this.mobile?.dialog.node.open) {
+      this.desktopReadyTheme = theme;
+      this.desktopLoading.hidden = true;
+      return;
+    }
+    this.desktopReadyTheme = undefined;
+    const selected = this.selectedPiece;
+    this.cancelLegacyPress();
+    this.selectedPiece = selected;
+    this.desktopTheme = theme;
+    document.documentElement.dataset.desktopTheme = theme;
+    this.renderScene();
+    this.mobile?.dialog.themeStatus('', theme);
+    this.desktopLoading.hidden = true;
+  }
+
+  private async prepareDesktopTheme(theme: VisualTheme): Promise<void> {
+    if (this.desktopTheme === theme || this.desktopRequestedTheme === theme) return;
+    const request = ++this.desktopRequest;
+    this.desktopRequestedTheme = theme;
+    this.desktopLoading.classList.remove('is-retry-banner');
+    this.desktopLoading.hidden = Boolean(this.desktopTheme) || Boolean(this.mobile?.active);
+    try {
+      await loadDesktopTheme(this, theme);
+      if (this.destroyed || request !== this.desktopRequest || this.settings.visualTheme !== theme)
+        return;
+      this.applyDesktopTheme(theme);
+    } catch {
+      if (this.destroyed || request !== this.desktopRequest) return;
+      this.desktopRequestedTheme = undefined;
+      const retry = document.createElement('button');
+      retry.type = 'button';
+      retry.textContent = 'Try again';
+      retry.addEventListener('click', () => {
+        this.desktopLoading.textContent = 'Packing your bento…';
+        void this.prepareDesktopTheme(this.settings.visualTheme);
+      });
+      this.desktopLoading.classList.toggle('is-retry-banner', Boolean(this.desktopTheme));
+      this.desktopLoading.replaceChildren(
+        'The artwork could not load. Check your connection and try again.',
+        retry,
+      );
+      this.desktopLoading.hidden = Boolean(this.mobile?.active);
+    }
+  }
+
+  private showDesktopThemePicker(): void {
+    this.desktopDialog.addThemePicker(
+      this.pendingDesktopTheme ?? this.settings.visualTheme,
+      (theme) => {
+        this.mobile?.cancelPendingThemeSelection();
+        const selection = ++this.desktopThemeSelection;
+        this.pendingDesktopTheme = theme;
+        this.desktopDialog.themeStatus('Loading this look…');
+        void loadDesktopTheme(this, theme)
+          .then(() => {
+            if (this.destroyed || selection !== this.desktopThemeSelection) return;
+            this.pendingDesktopTheme = undefined;
+            ++this.desktopRequest;
+            this.desktopRequestedTheme = theme;
+            this.settings = this.save.updateSettings({ visualTheme: theme });
+            this.applyDesktopTheme(theme);
+            this.desktopDialog.themeStatus('', theme);
+          })
+          .catch(() => {
+            if (this.destroyed || selection !== this.desktopThemeSelection) return;
+            this.pendingDesktopTheme = undefined;
+            this.desktopDialog.themeStatus(
+              'This look could not load. Choose it again to retry.',
+              this.settings.visualTheme,
+            );
+          });
+      },
+    );
+    if (this.pendingDesktopTheme) this.desktopDialog.themeStatus('Loading this look…');
+  }
+
   private cancelLegacyPress(): void {
     const drag = this.dragging;
     if (drag) {
@@ -572,6 +715,7 @@ export class PuzzleScene extends Phaser.Scene {
         this.startRandom();
       },
       () => void this.copySeed(),
+      this.desktopTheme,
     );
   }
 
@@ -651,6 +795,7 @@ export class PuzzleScene extends Phaser.Scene {
     parent?: Phaser.GameObjects.Container,
   ): Phaser.GameObjects.Container {
     const container = this.add.container(spec.x, spec.y);
+    const skin = this.desktopTheme ? desktopSkin(this.desktopTheme) : undefined;
     const background = this.add.graphics();
     const height = spec.icon ? 48 : 44;
     background.fillStyle(spec.primary ? COLORS.coral : COLORS.milk, 0.94);
@@ -659,13 +804,35 @@ export class PuzzleScene extends Phaser.Scene {
     background.strokeRoundedRect(-spec.width / 2, -height / 2, spec.width, height, height / 2);
     const text = this.add
       .text(0, spec.icon ? -1 : 0, spec.label, {
-        fontFamily: FONT_BODY,
+        fontFamily: skin?.font ?? FONT_BODY,
         fontSize: spec.icon ? '24px' : '16px',
         fontStyle: 'bold',
-        color: spec.primary ? '#fffaf3' : '#695149',
+        color: skin
+          ? spec.primary && this.desktopTheme === 'maple'
+            ? '#fffdf2'
+            : skin.inkCss
+          : spec.primary
+            ? '#fffaf3'
+            : '#695149',
       })
       .setOrigin(0.5);
-    container.add([background, text]);
+    if (this.desktopTheme) {
+      background.setVisible(false);
+      const material = spec.icon
+        ? this.add
+            .image(0, 0, themeTexture(this.desktopTheme, 'well'))
+            .setDisplaySize(height, height)
+        : addThemedMaterial(
+            this,
+            this.desktopTheme,
+            spec.primary ? 'button-primary' : 'button-secondary',
+            0,
+            0,
+            spec.width + 8,
+            height + 8,
+          );
+      container.add([background, material, text]);
+    } else container.add([background, text]);
     container.setSize(spec.width, height).setInteractive({ useHandCursor: true });
     container.on('pointerdown', () => {
       if (spec.sound !== false) this.audio.play(spec.sound ?? 'ui_tap');
@@ -768,6 +935,7 @@ export class PuzzleScene extends Phaser.Scene {
           },
         },
       ],
+      true,
     );
     if (this.mobile?.active) {
       this.mobile.showThemePicker(this.settings.visualTheme);
@@ -811,6 +979,7 @@ export class PuzzleScene extends Phaser.Scene {
       sound?: SoundName | false;
     }>,
     sliders?: readonly SliderSpec[],
+    appearance = false,
   ): void {
     this.closeModal();
     if (this.mobile?.active) {
@@ -829,6 +998,26 @@ export class PuzzleScene extends Phaser.Scene {
       );
       return;
     }
+    if (appearance) {
+      this.modal = this.add.container();
+      this.desktopDialog.node.dataset.theme = this.desktopTheme ?? this.settings.visualTheme;
+      this.desktopDialog.show(
+        titleText,
+        bodyText,
+        actions.map((action) => ({
+          ...action,
+          callback: () => {
+            if (action.sound !== false) this.audio.play(action.sound ?? 'ui_tap');
+            action.callback();
+          },
+        })),
+        () => this.closeModal(),
+        sliders,
+      );
+      this.showDesktopThemePicker();
+      return;
+    }
+    const skin = this.desktopTheme ? desktopSkin(this.desktopTheme) : undefined;
     const modal = this.add.container(800, 450).setDepth(2600);
     const shade = this.add.rectangle(0, 0, 1600, 900, COLORS.walnut, 0.26).setInteractive();
     const card = this.add.graphics();
@@ -858,7 +1047,18 @@ export class PuzzleScene extends Phaser.Scene {
         lineSpacing: 7,
       })
       .setOrigin(0.5);
-    modal.add([shade, card, title, body]);
+    if (this.desktopTheme) {
+      card.setVisible(false);
+      modal.add([
+        shade,
+        card,
+        addThemedMaterial(this, this.desktopTheme, 'panel', 0, 0, 680, height + 28),
+        title,
+        body,
+      ]);
+      title.setFontFamily(skin!.font).setColor(skin!.inkCss);
+      body.setFontFamily(skin!.font).setColor(skin!.mutedCss);
+    } else modal.add([shade, card, title, body]);
     sliders?.forEach((slider, index) => {
       this.makeSlider(modal, -height / 2 + 218 + index * 88, slider);
     });
@@ -923,9 +1123,15 @@ export class PuzzleScene extends Phaser.Scene {
     ring.lineStyle(7, COLORS.honey, 0.96);
     ring.strokeRoundedRect(-76, -76, 152, 152, 28);
 
-    const visual = getPieceVisualLayout(pieceId);
+    const visual = this.desktopTheme
+      ? getThemedPieceVisualLayout(this.desktopTheme, pieceId, 158)
+      : getPieceVisualLayout(pieceId);
     const ghost = this.add
-      .image(visual.x, visual.y, piece.textureKey)
+      .image(
+        visual.x,
+        visual.y,
+        this.desktopTheme ? themeTexture(this.desktopTheme, `piece_${pieceId}`) : piece.textureKey,
+      )
       .setDisplaySize(visual.size, visual.size)
       .setAlpha(0.78)
       .setName('hint-piece-image');
@@ -1023,9 +1229,14 @@ export class PuzzleScene extends Phaser.Scene {
 
   private closeModal(): void {
     this.mobile?.dialog.close();
-    if (!this.modal) return;
-    this.modal.destroy(true);
+    this.desktopDialog?.close();
+    this.modal?.destroy(true);
     this.modal = undefined;
+    const ready = this.desktopReadyTheme;
+    if (ready && !this.destroyed && ready === this.settings.visualTheme) {
+      this.desktopReadyTheme = undefined;
+      this.applyDesktopTheme(ready);
+    }
   }
 
   private moveFocus(delta: number): void {

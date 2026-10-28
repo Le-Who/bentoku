@@ -1,0 +1,30 @@
+{
+  "generator": "Built-in image_gen tool",
+  "outputNormalization": "Centered cover crop and resize to 1600x900, then versioned PNG and quality-90 WebP encoding.",
+  "themes": {
+    "picnic": {
+      "references": [
+        "art/references/mobile-themes/picnic.png",
+        "art/runtime-sources/themes/picnic/background.png"
+      ],
+      "rawGeneratedImage": "C:/Users/user/.codex/generated_images/01a18011-902f-7591-901f-3b61eb8e7e47/exec-8ae28eb4-95fd-43a7-95cf-ae9453e09c30.png",
+      "prompt": "Use case: stylized-concept. Asset type: production desktop game background, landscape 16:9. Reference image 1 shows the overall mobile game's handcrafted visual style; reference image 2 is its existing bare background. Create a NEW wide top-down environment backdrop matching this Picnic theme: tactile pink and cream strawberry gingham cloth/paper craft, warm soft natural light, fine woven texture, with little cream flowers, sage leaves and strawberry accents at the extreme outer rim and corners. All the large interior is calm continuous gingham texture with gentle dimensional lighting, leaving clear space for real interface elements to be layered on top. No game board, panels, objects in the central area, food pieces, grids, text, buttons, logos, or watermark. Do not reproduce the mobile UI. The result must be a wide horizontal environment, not a stretched portrait."
+    },
+    "porcelain": {
+      "references": [
+        "art/references/mobile-themes/porcelain.png",
+        "art/runtime-sources/themes/porcelain/background.png"
+      ],
+      "rawGeneratedImage": "C:/Users/user/.codex/generated_images/01a18011-902f-7591-901f-3b61eb8e7e47/exec-519e4a47-6f78-4c69-9396-124bf54fe421.png",
+      "prompt": "Use case: stylized-concept. Asset type: production desktop game background, landscape 16:9. Reference image 1 shows the overall mobile game's softly lit ceramic style; reference image 2 is the bare mobile background. Create a NEW wide top-down quiet milk-white and pale sage table environment, subtly tactile matte ceramic and softly lit material ambience matching Porcelain. Refined and warm, not a flat gradient: delicate texture, diffuse natural lighting, very restrained hints of sage or ceramic only at the extreme outer edges. All the large interior remains calm, light, continuous table surface for real interface elements to be layered on top. No board, panels, plates, food, grid, text, buttons, logos, or watermark. Do not reproduce the mobile UI. The result must be a wide horizontal environment, not a stretched portrait."
+    },
+    "maple": {
+      "references": [
+        "art/references/mobile-themes/maple.png",
+        "art/runtime-sources/themes/maple/background.png"
+      ],
+      "rawGeneratedImage": "C:/Users/user/.codex/generated_images/01a18011-902f-7591-901f-3b61eb8e7e47/exec-7384627e-42af-49d9-8e34-adfaeac2fd5d.png",
+      "prompt": "Use case: stylized-concept. Asset type: production desktop game background, landscape 16:9. Reference image 1 shows the overall mobile game's warm tabletop style; reference image 2 is its existing bare background. Create a NEW wide top-down environment backdrop matching Maple: honey maple wooden tabletop with richly tactile fine grain, warmly dappled daylight, very restrained peach linen, tea cup and sage leaves ONLY peeking in at the extreme outer edges or corners. All the large interior is calm continuous warm wood for real interface elements to be layered on top. No game board, panels, food, grid, text, buttons, logos, or watermark. Do not reproduce the mobile UI. The result must be a wide horizontal environment, not a stretched portrait."
+    }
+  }
+}
