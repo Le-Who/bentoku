@@ -1,15 +1,18 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { DESKTOP_THEME_MATERIALS } from '../src/game/DesktopThemeLoader';
+import { VISUAL_THEMES } from '../src/game/VisualTheme';
+import { MOBILE_THEME_MATERIALS } from '../src/mobile/ThemeAssets';
+import { ANIMALS, FOODS } from '../src/puzzle/types';
 import {
   clueAssets,
   environmentAssets,
   musicAssets,
-  pieceAssets,
   soundAssets,
 } from '../src/services/AssetRegistry';
 
-const runtimeAssets = [...pieceAssets, ...clueAssets, ...environmentAssets];
+const runtimeAssets = [...clueAssets, ...environmentAssets];
 
 const expectedSoundProfiles = {
   piece_pick: { duration: 0.28, peakDb: -20 },
@@ -31,7 +34,7 @@ const walk = (directory: string): string[] =>
 
 describe('production assets', () => {
   it('registers only WebP images that exist', () => {
-    expect(runtimeAssets).toHaveLength(24);
+    expect(runtimeAssets).toHaveLength(8);
     for (const asset of runtimeAssets) {
       expect(asset.path.endsWith('.webp'), asset.path).toBe(true);
       expect(() => readdirSync(path.dirname(path.join('public', asset.path)))).not.toThrow();
@@ -44,6 +47,33 @@ describe('production assets', () => {
   it('contains no raw PNG or JPEG files in the public runtime tree', () => {
     const rawImages = walk('public').filter((file) => /\.(png|jpe?g)$/i.test(file));
     expect(rawImages).toEqual([]);
+  });
+
+  it('ships exactly the assets used by the game, theme selectors and font license', () => {
+    const themeMaterials = new Set([
+      ...DESKTOP_THEME_MATERIALS,
+      ...MOBILE_THEME_MATERIALS,
+      'preview',
+    ]);
+    const expected = [
+      ...runtimeAssets.map(({ path: name }) => `public/${name}`),
+      ...VISUAL_THEMES.flatMap(({ id }) => [
+        ...[...themeMaterials].map((name) => `public/assets/themes/${id}/${name}.webp`),
+        ...ANIMALS.flatMap((animal) =>
+          FOODS.map((food) => `public/assets/themes/${id}/pieces/${animal}_${food}.webp`),
+        ),
+      ]),
+      ...Object.values(soundAssets).map(({ path: name }) => `public/${name}`),
+      ...musicAssets.map(({ path: name }) => `public/${name}`),
+      'public/assets/ui/sakura_seal.webp',
+      'public/assets/fonts/Nunito-Variable.ttf',
+      'public/assets/fonts/Nunito-OFL.txt',
+    ];
+    expect(
+      walk('public')
+        .map((file) => file.replaceAll('\\', '/'))
+        .sort(),
+    ).toEqual(expected.sort());
   });
 
   it('registers four compressed music tracks that exist', () => {

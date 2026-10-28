@@ -1,0 +1,263 @@
+{
+  "date": "2026-10-28",
+  "baselineCommit": "8d2c195",
+  "method": "Chromium CDP Network events, separate fresh browser contexts against Vite production preview, Gentle BENTO-E2E-0001, 1440x900 desktop and 390x844 mobile. Measurements are image bytes including HTTP headers, excluding browser-managed favicon requests, JavaScript, CSS, fonts and audio. Zero entries mean no image request was made in that phase.",
+  "before": {
+    "cold-desktop": {
+      "imageRequests": 46,
+      "wireImageRequests": 46,
+      "encodedWireBytes": 2366718,
+      "requestedImages": [
+        "/assets/pieces/cat_egg.webp",
+        "/assets/pieces/cat_rice.webp",
+        "/assets/pieces/cat_sandwich.webp",
+        "/assets/pieces/bear_egg.webp",
+        "/assets/pieces/bear_rice.webp",
+        "/assets/pieces/bear_sandwich.webp",
+        "/assets/pieces/pig_egg.webp",
+        "/assets/pieces/pig_rice.webp",
+        "/assets/pieces/pig_sandwich.webp",
+        "/assets/pieces/bunny_egg.webp",
+        "/assets/pieces/bunny_rice.webp",
+        "/assets/pieces/bunny_sandwich.webp",
+        "/assets/clues/cat.webp",
+        "/assets/clues/bear.webp",
+        "/assets/clues/pig.webp",
+        "/assets/clues/bunny.webp",
+        "/assets/clues/egg.webp",
+        "/assets/clues/rice.webp",
+        "/assets/clues/sandwich.webp",
+        "/assets/environment/gameplay_plate.webp",
+        "/assets/ui/success_stamp.webp",
+        "/assets/ui/tiny_flower.webp",
+        "/assets/ui/tiny_leaf.webp",
+        "/assets/ui/tiny_sparkle.webp",
+        "/assets/themes/porcelain/desktop-background.webp",
+        "/assets/themes/porcelain/desktop-panel.webp",
+        "/assets/themes/porcelain/desktop-tray.webp",
+        "/assets/themes/porcelain/board.webp",
+        "/assets/themes/porcelain/panel.webp",
+        "/assets/themes/porcelain/tray.webp",
+        "/assets/themes/porcelain/well.webp",
+        "/assets/themes/porcelain/logo.webp",
+        "/assets/themes/porcelain/button-primary.webp",
+        "/assets/themes/porcelain/button-secondary.webp",
+        "/assets/themes/porcelain/pieces/cat_egg.webp",
+        "/assets/themes/porcelain/pieces/cat_rice.webp",
+        "/assets/themes/porcelain/pieces/cat_sandwich.webp",
+        "/assets/themes/porcelain/pieces/bear_egg.webp",
+        "/assets/themes/porcelain/pieces/bear_rice.webp",
+        "/assets/themes/porcelain/pieces/bear_sandwich.webp",
+        "/assets/themes/porcelain/pieces/pig_egg.webp",
+        "/assets/themes/porcelain/pieces/pig_rice.webp",
+        "/assets/themes/porcelain/pieces/pig_sandwich.webp",
+        "/assets/themes/porcelain/pieces/bunny_egg.webp",
+        "/assets/themes/porcelain/pieces/bunny_rice.webp",
+        "/assets/themes/porcelain/pieces/bunny_sandwich.webp"
+      ]
+    },
+    "first-settings": {
+      "imageRequests": 3,
+      "wireImageRequests": 3,
+      "encodedWireBytes": 107632,
+      "requestedImages": [
+        "/assets/themes/picnic/preview.webp",
+        "/assets/themes/porcelain/preview.webp",
+        "/assets/themes/maple/preview.webp"
+      ]
+    },
+    "first-picnic": {
+      "imageRequests": 22,
+      "wireImageRequests": 22,
+      "encodedWireBytes": 1975806,
+      "requestedImages": [
+        "/assets/themes/picnic/desktop-background.webp",
+        "/assets/themes/picnic/desktop-panel.webp",
+        "/assets/themes/picnic/desktop-tray.webp",
+        "/assets/themes/picnic/board.webp",
+        "/assets/themes/picnic/panel.webp",
+        "/assets/themes/picnic/tray.webp",
+        "/assets/themes/picnic/well.webp",
+        "/assets/themes/picnic/logo.webp",
+        "/assets/themes/picnic/button-primary.webp",
+        "/assets/themes/picnic/button-secondary.webp",
+        "/assets/themes/picnic/pieces/cat_egg.webp",
+        "/assets/themes/picnic/pieces/cat_rice.webp",
+        "/assets/themes/picnic/pieces/cat_sandwich.webp",
+        "/assets/themes/picnic/pieces/bear_egg.webp",
+        "/assets/themes/picnic/pieces/bear_rice.webp",
+        "/assets/themes/picnic/pieces/bear_sandwich.webp",
+        "/assets/themes/picnic/pieces/pig_egg.webp",
+        "/assets/themes/picnic/pieces/pig_rice.webp",
+        "/assets/themes/picnic/pieces/pig_sandwich.webp",
+        "/assets/themes/picnic/pieces/bunny_egg.webp",
+        "/assets/themes/picnic/pieces/bunny_rice.webp",
+        "/assets/themes/picnic/pieces/bunny_sandwich.webp"
+      ]
+    },
+    "warm-porcelain": {
+      "imageRequests": 0,
+      "wireImageRequests": 0,
+      "encodedWireBytes": 0,
+      "requestedImages": []
+    },
+    "warm-settings": {
+      "imageRequests": 0,
+      "wireImageRequests": 0,
+      "encodedWireBytes": 0,
+      "requestedImages": []
+    },
+    "same-theme-mobile": {
+      "imageRequests": 8,
+      "wireImageRequests": 8,
+      "encodedWireBytes": 29184,
+      "requestedImages": [
+        "/assets/mobile/indigo-linen.webp",
+        "/assets/themes/porcelain/background.webp",
+        "/assets/clues/bunny.webp",
+        "/assets/clues/rice.webp",
+        "/assets/clues/sandwich.webp",
+        "/assets/clues/pig.webp",
+        "/assets/clues/egg.webp",
+        "/assets/clues/bear.webp"
+      ]
+    },
+    "same-theme-desktop": {
+      "imageRequests": 0,
+      "wireImageRequests": 0,
+      "encodedWireBytes": 0,
+      "requestedImages": []
+    }
+  },
+  "after": {
+    "cold-desktop": {
+      "imageRequests": 29,
+      "wireImageRequests": 29,
+      "encodedWireBytes": 1062540,
+      "requestedImages": [
+        "/assets/clues/cat.webp",
+        "/assets/clues/bear.webp",
+        "/assets/clues/pig.webp",
+        "/assets/clues/bunny.webp",
+        "/assets/clues/egg.webp",
+        "/assets/clues/rice.webp",
+        "/assets/clues/sandwich.webp",
+        "/assets/ui/success_stamp.webp",
+        "/assets/themes/porcelain/desktop-background.webp",
+        "/assets/themes/porcelain/desktop-panel.webp",
+        "/assets/themes/porcelain/desktop-tray.webp",
+        "/assets/themes/porcelain/board.webp",
+        "/assets/themes/porcelain/panel.webp",
+        "/assets/themes/porcelain/well.webp",
+        "/assets/themes/porcelain/logo.webp",
+        "/assets/themes/porcelain/button-primary.webp",
+        "/assets/themes/porcelain/button-secondary.webp",
+        "/assets/themes/porcelain/pieces/cat_egg.webp",
+        "/assets/themes/porcelain/pieces/cat_rice.webp",
+        "/assets/themes/porcelain/pieces/cat_sandwich.webp",
+        "/assets/themes/porcelain/pieces/bear_egg.webp",
+        "/assets/themes/porcelain/pieces/bear_rice.webp",
+        "/assets/themes/porcelain/pieces/bear_sandwich.webp",
+        "/assets/themes/porcelain/pieces/pig_egg.webp",
+        "/assets/themes/porcelain/pieces/pig_rice.webp",
+        "/assets/themes/porcelain/pieces/pig_sandwich.webp",
+        "/assets/themes/porcelain/pieces/bunny_egg.webp",
+        "/assets/themes/porcelain/pieces/bunny_rice.webp",
+        "/assets/themes/porcelain/pieces/bunny_sandwich.webp"
+      ]
+    },
+    "first-settings": {
+      "imageRequests": 3,
+      "wireImageRequests": 3,
+      "encodedWireBytes": 107632,
+      "requestedImages": [
+        "/assets/themes/picnic/preview.webp",
+        "/assets/themes/porcelain/preview.webp",
+        "/assets/themes/maple/preview.webp"
+      ]
+    },
+    "first-picnic": {
+      "imageRequests": 21,
+      "wireImageRequests": 21,
+      "encodedWireBytes": 1913792,
+      "requestedImages": [
+        "/assets/themes/picnic/desktop-background.webp",
+        "/assets/themes/picnic/desktop-panel.webp",
+        "/assets/themes/picnic/desktop-tray.webp",
+        "/assets/themes/picnic/board.webp",
+        "/assets/themes/picnic/panel.webp",
+        "/assets/themes/picnic/well.webp",
+        "/assets/themes/picnic/logo.webp",
+        "/assets/themes/picnic/button-primary.webp",
+        "/assets/themes/picnic/button-secondary.webp",
+        "/assets/themes/picnic/pieces/cat_egg.webp",
+        "/assets/themes/picnic/pieces/cat_rice.webp",
+        "/assets/themes/picnic/pieces/cat_sandwich.webp",
+        "/assets/themes/picnic/pieces/bear_egg.webp",
+        "/assets/themes/picnic/pieces/bear_rice.webp",
+        "/assets/themes/picnic/pieces/bear_sandwich.webp",
+        "/assets/themes/picnic/pieces/pig_egg.webp",
+        "/assets/themes/picnic/pieces/pig_rice.webp",
+        "/assets/themes/picnic/pieces/pig_sandwich.webp",
+        "/assets/themes/picnic/pieces/bunny_egg.webp",
+        "/assets/themes/picnic/pieces/bunny_rice.webp",
+        "/assets/themes/picnic/pieces/bunny_sandwich.webp"
+      ]
+    },
+    "warm-porcelain": {
+      "imageRequests": 0,
+      "wireImageRequests": 0,
+      "encodedWireBytes": 0,
+      "requestedImages": []
+    },
+    "warm-settings": {
+      "imageRequests": 0,
+      "wireImageRequests": 0,
+      "encodedWireBytes": 0,
+      "requestedImages": []
+    },
+    "same-theme-mobile": {
+      "imageRequests": 2,
+      "wireImageRequests": 2,
+      "encodedWireBytes": 27082,
+      "requestedImages": [
+        "/assets/themes/porcelain/background.webp",
+        "/assets/themes/porcelain/tray.webp"
+      ]
+    },
+    "same-theme-desktop": {
+      "imageRequests": 0,
+      "wireImageRequests": 0,
+      "encodedWireBytes": 0,
+      "requestedImages": []
+    }
+  },
+  "delivery": {
+    "publicFileCount": 96,
+    "runtimeRasterFileCount": 81,
+    "rawImagesInPublic": [],
+    "rawImagesInDist": [],
+    "distPublicMismatches": [],
+    "unexpectedDistFiles": [],
+    "publicBytes": 14416730,
+    "runtimeRasterBytes": 5858480
+  },
+  "compression": {
+    "quality": 90,
+    "alphaQuality": 100,
+    "desktopSpecificImages": 9,
+    "sourcePngBytes": 19377574,
+    "losslessWebpComparisonBytes": 11144320,
+    "runtimeWebpBytes": 2191346,
+    "quality85Bytes": 1679672,
+    "quality80Bytes": 1377634,
+    "selection": "Quality 90 retains fine gingham, wood and cloth detail; 85 and 80 passed numeric limits but progressively smoothed these materials. Runtime files were kept at the visually verified quality."
+  },
+  "policy": {
+    "startup": "Only shared clue/completion images and the selected theme; Desktop excludes mobile tray.",
+    "otherThemes": "Full artwork loads only when selected; three small selector previews load when settings opens.",
+    "cache": "Successful and in-flight images are shared per URL for this document. Only failed images are retried; subsequent page visits depend on browser/server HTTP caching.",
+    "recovery": "Loading and error recovery use a plain surface with a retry message. Original art was retired because it was covered by that message and could not contribute to recovery.",
+    "authoring": "PNG/JPEG source and reference files remain under art and are not shipped or requested by the game."
+  }
+}

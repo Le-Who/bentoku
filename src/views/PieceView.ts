@@ -17,20 +17,18 @@ export class PieceView extends Phaser.GameObjects.Container {
     super(scene, x, y);
     this.piece = piece;
     this.theme = theme;
+    const artworkReady = Boolean(theme);
     this.shadow = scene.add.ellipse(3, 35, 84, 28, COLORS.shadow, 0.18);
     // The source canvas intentionally includes generous transparent safety
     // padding. Scale and optically center the whole canvas; never trim it.
     const visual = theme
       ? getThemedPieceVisualLayout(theme, piece.id, 130)
-      : VISUAL_LAYOUT[piece.id];
+      : { size: 130, x: 0, y: 0 };
     this.sprite = scene.add
-      .image(
-        visual.x,
-        visual.y,
-        theme ? themeTexture(theme, `piece_${piece.id}`) : piece.textureKey,
-      )
-      .setDisplaySize(visual.size, visual.size);
-    if (theme) this.shadow.setVisible(false);
+      .image(visual.x, visual.y, theme ? themeTexture(theme, `piece_${piece.id}`) : '__WHITE')
+      .setDisplaySize(visual.size, visual.size)
+      .setVisible(artworkReady);
+    if (theme || !artworkReady) this.shadow.setVisible(false);
     this.ring = scene.add.graphics();
     this.add([this.shadow, this.sprite, this.ring]);
     this.setSize(116, 116);
@@ -119,22 +117,3 @@ export class PieceView extends Phaser.GameObjects.Container {
     });
   }
 }
-
-const VISUAL_LAYOUT: Record<BentoPiece['id'], { size: number; x: number; y: number }> = {
-  bear_egg: { size: 187, x: -4, y: -8 },
-  bear_rice: { size: 199, x: -4, y: -10 },
-  bear_sandwich: { size: 206, x: -4, y: -7 },
-  bunny_egg: { size: 192, x: -4, y: -6 },
-  bunny_rice: { size: 175, x: -4, y: -7 },
-  bunny_sandwich: { size: 203, x: -4, y: -7 },
-  cat_egg: { size: 200, x: -4, y: -7 },
-  cat_rice: { size: 199, x: -4, y: -5 },
-  cat_sandwich: { size: 204, x: -4, y: -6 },
-  pig_egg: { size: 202, x: -4, y: -8 },
-  pig_rice: { size: 202, x: -4, y: -7 },
-  pig_sandwich: { size: 209, x: -4, y: -11 },
-};
-
-export const getPieceVisualLayout = (
-  pieceId: BentoPiece['id'],
-): Readonly<{ size: number; x: number; y: number }> => VISUAL_LAYOUT[pieceId];

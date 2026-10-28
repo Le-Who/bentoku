@@ -1,14 +1,14 @@
 import type Phaser from 'phaser';
 import { ANIMALS, FOODS } from '../puzzle/types';
 import type { VisualTheme } from './VisualTheme';
+import { loadImageAsset } from '../services/ImageAssetCache';
 
-const materials = [
+export const DESKTOP_THEME_MATERIALS = [
   'desktop-background',
   'desktop-panel',
   'desktop-tray',
   'board',
   'panel',
-  'tray',
   'well',
   'logo',
   'button-primary',
@@ -27,7 +27,7 @@ export function loadDesktopTheme(scene: Phaser.Scene, theme: VisualTheme): Promi
   const existing = cache.get(theme);
   if (existing) return existing;
   const entries = [
-    ...materials.map((asset) => ({
+    ...DESKTOP_THEME_MATERIALS.map((asset) => ({
       key: `skin_${theme}_${asset}`,
       url: `assets/themes/${theme}/${asset}.webp`,
     })),
@@ -41,12 +41,7 @@ export function loadDesktopTheme(scene: Phaser.Scene, theme: VisualTheme): Promi
   const batch = Promise.all(
     entries.map(async (entry) => {
       if (textures.exists(entry.key)) return undefined;
-      const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve(image);
-        image.onerror = () => reject(new Error(`Unable to load ${entry.url}`));
-        image.src = entry.url;
-      });
+      const image = await loadImageAsset(entry.url);
       return { key: entry.key, image };
     }),
   )

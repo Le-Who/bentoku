@@ -22,10 +22,7 @@
   overflow: auto;
   overflow-x: hidden;
   color: var(--indigo);
-  background:
-    linear-gradient(#3b57754d, #3b57754d),
-    url('/assets/mobile/indigo-linen.webp') center / 350px;
-  background-color: #536b8b;
+  background: #536b8b;
   font-family: 'Trebuchet MS', system-ui, sans-serif;
   isolation: isolate;
 }
@@ -117,9 +114,7 @@
   min-height: 0;
   padding: 8px 10px 10px;
   border-radius: 13px 17px 15px 12px;
-  background:
-    linear-gradient(#f2ebdbef, #e5dbc6ed),
-    url('/assets/mobile/indigo-linen.webp') center / 300px;
+  background: #f2ebdb;
   border: 1px solid #fff2dc;
   box-shadow:
     0 3px 0 #20354e55,
@@ -218,9 +213,7 @@
   min-height: 0;
   position: relative;
   border-radius: 9px;
-  background:
-    linear-gradient(#ede3ccdd, #e4d7bddb),
-    url('/assets/mobile/indigo-linen.webp') center / 250px;
+  background: #ede3cc;
   box-shadow: inset 0 2px 4px #6e5b3d30;
 }
 .mobile-cell::after {
@@ -274,9 +267,7 @@
   pointer-events: none;
   border: 1px solid #e4d9b566;
   border-radius: 8% 8% 16px 16px;
-  background:
-    linear-gradient(#617b99de, #4c6583f5),
-    url('/assets/mobile/indigo-linen.webp') center / 200px;
+  background: #617b99;
   box-shadow: 0 -2px 2px #192f4530;
 }
 .mobile-pocket::before {

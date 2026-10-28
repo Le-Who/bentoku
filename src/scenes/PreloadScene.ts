@@ -3,13 +3,7 @@ import { loadDesktopTheme } from '../game/DesktopThemeLoader';
 import { DEFAULT_VISUAL_THEME, VISUAL_THEMES } from '../game/VisualTheme';
 import { SaveService } from '../services/SaveService';
 import { COLORS, FONT_DISPLAY } from '../game/constants';
-import {
-  clueAssets,
-  environmentAssets,
-  musicAssets,
-  pieceAssets,
-  soundAssets,
-} from '../services/AssetRegistry';
+import { sharedImageAssets, musicAssets, soundAssets } from '../services/AssetRegistry';
 
 export class PreloadScene extends Phaser.Scene {
   private status?: Phaser.GameObjects.Text;
@@ -40,9 +34,7 @@ export class PreloadScene extends Phaser.Scene {
       title.setText('Ready!');
     });
 
-    [...pieceAssets, ...clueAssets, ...environmentAssets].forEach(({ key, path }) =>
-      this.load.image(key, path),
-    );
+    sharedImageAssets.forEach(({ key, path }) => this.load.image(key, path));
     Object.values(soundAssets).forEach(({ key, path }) => this.load.audio(key, path));
     const firstMusic = musicAssets[0];
     if (firstMusic) this.load.audio(firstMusic.key, firstMusic.path);

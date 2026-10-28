@@ -12,7 +12,81 @@
     "maxVisibleWeightedMae": 4,
     "metric": "Mean absolute RGB channel error weighted by source alpha; transparent pixels have zero weight. Dimensions and all decoded alpha bytes must match exactly."
   },
-  "selection": "Quality 90 preserves fine detail in visual comparisons of a board, character sprite, linen texture and clue glyph while reducing total runtime size by about 80%.",
+  "selection": "Quality 90 preserves fine detail in visual comparisons of a board, character sprite, linen texture and clue glyph while reducing the original benchmark runtime size by about 80%.",
+  "retiredRuntimeAssets": {
+    "description": "These 17 files were part of the original 89-asset benchmark, whose comparison totals remain historical; they are no longer active runtime assets. Their source art is retained.",
+    "files": [
+      {
+        "runtime": "public/assets/mobile/indigo-linen.webp",
+        "encodedBytes": 19270
+      },
+      {
+        "runtime": "public/assets/ui/tiny_sparkle.webp",
+        "encodedBytes": 10452
+      },
+      {
+        "runtime": "public/assets/pieces/bear_egg.webp",
+        "encodedBytes": 83514
+      },
+      {
+        "runtime": "public/assets/pieces/bear_rice.webp",
+        "encodedBytes": 61328
+      },
+      {
+        "runtime": "public/assets/pieces/bear_sandwich.webp",
+        "encodedBytes": 107400
+      },
+      {
+        "runtime": "public/assets/pieces/bunny_egg.webp",
+        "encodedBytes": 98308
+      },
+      {
+        "runtime": "public/assets/pieces/bunny_rice.webp",
+        "encodedBytes": 74126
+      },
+      {
+        "runtime": "public/assets/pieces/bunny_sandwich.webp",
+        "encodedBytes": 110918
+      },
+      {
+        "runtime": "public/assets/pieces/cat_egg.webp",
+        "encodedBytes": 76014
+      },
+      {
+        "runtime": "public/assets/pieces/cat_rice.webp",
+        "encodedBytes": 62822
+      },
+      {
+        "runtime": "public/assets/pieces/cat_sandwich.webp",
+        "encodedBytes": 93368
+      },
+      {
+        "runtime": "public/assets/pieces/pig_egg.webp",
+        "encodedBytes": 79810
+      },
+      {
+        "runtime": "public/assets/pieces/pig_rice.webp",
+        "encodedBytes": 59792
+      },
+      {
+        "runtime": "public/assets/pieces/pig_sandwich.webp",
+        "encodedBytes": 93724
+      },
+      {
+        "runtime": "public/assets/ui/tiny_flower.webp",
+        "encodedBytes": 12498
+      },
+      {
+        "runtime": "public/assets/ui/tiny_leaf.webp",
+        "encodedBytes": 9448
+      },
+      {
+        "runtime": "public/assets/environment/gameplay_plate.webp",
+        "encodedBytes": 248166
+      }
+    ],
+    "encodedBytes": 1300958
+  },
   "comparison": {
     "originalLosslessBytes": 25258604,
     "qualities": {
@@ -481,97 +555,6 @@
       "visibleWeightedMae": 2.292
     },
     {
-      "source": "art/runtime-sources/mobile/indigo-linen.png",
-      "runtime": "public/assets/mobile/indigo-linen.webp",
-      "losslessBytes": 87200,
-      "encodedBytes": 19270,
-      "visibleWeightedMae": 1.904
-    },
-    {
-      "source": "art/user-assets/pieces/bear_egg.png",
-      "runtime": "public/assets/pieces/bear_egg.webp",
-      "losslessBytes": 469874,
-      "encodedBytes": 83514,
-      "visibleWeightedMae": 1.73
-    },
-    {
-      "source": "art/user-assets/pieces/bear_rice.png",
-      "runtime": "public/assets/pieces/bear_rice.webp",
-      "losslessBytes": 352282,
-      "encodedBytes": 61328,
-      "visibleWeightedMae": 1.473
-    },
-    {
-      "source": "art/user-assets/pieces/bear_sandwich.png",
-      "runtime": "public/assets/pieces/bear_sandwich.webp",
-      "losslessBytes": 500504,
-      "encodedBytes": 107400,
-      "visibleWeightedMae": 2.237
-    },
-    {
-      "source": "art/user-assets/pieces/bunny_egg.png",
-      "runtime": "public/assets/pieces/bunny_egg.webp",
-      "losslessBytes": 466806,
-      "encodedBytes": 98308,
-      "visibleWeightedMae": 2.062
-    },
-    {
-      "source": "art/user-assets/pieces/bunny_rice.png",
-      "runtime": "public/assets/pieces/bunny_rice.webp",
-      "losslessBytes": 393332,
-      "encodedBytes": 74126,
-      "visibleWeightedMae": 1.645
-    },
-    {
-      "source": "art/user-assets/pieces/bunny_sandwich.png",
-      "runtime": "public/assets/pieces/bunny_sandwich.webp",
-      "losslessBytes": 474128,
-      "encodedBytes": 110918,
-      "visibleWeightedMae": 2.408
-    },
-    {
-      "source": "art/user-assets/pieces/cat_egg.png",
-      "runtime": "public/assets/pieces/cat_egg.webp",
-      "losslessBytes": 418404,
-      "encodedBytes": 76014,
-      "visibleWeightedMae": 1.847
-    },
-    {
-      "source": "art/user-assets/pieces/cat_rice.png",
-      "runtime": "public/assets/pieces/cat_rice.webp",
-      "losslessBytes": 374372,
-      "encodedBytes": 62822,
-      "visibleWeightedMae": 1.501
-    },
-    {
-      "source": "art/user-assets/pieces/cat_sandwich.png",
-      "runtime": "public/assets/pieces/cat_sandwich.webp",
-      "losslessBytes": 452716,
-      "encodedBytes": 93368,
-      "visibleWeightedMae": 2.155
-    },
-    {
-      "source": "art/user-assets/pieces/pig_egg.png",
-      "runtime": "public/assets/pieces/pig_egg.webp",
-      "losslessBytes": 413850,
-      "encodedBytes": 79810,
-      "visibleWeightedMae": 1.946
-    },
-    {
-      "source": "art/user-assets/pieces/pig_rice.png",
-      "runtime": "public/assets/pieces/pig_rice.webp",
-      "losslessBytes": 366684,
-      "encodedBytes": 59792,
-      "visibleWeightedMae": 1.488
-    },
-    {
-      "source": "art/user-assets/pieces/pig_sandwich.png",
-      "runtime": "public/assets/pieces/pig_sandwich.webp",
-      "losslessBytes": 438530,
-      "encodedBytes": 93724,
-      "visibleWeightedMae": 2.196
-    },
-    {
       "source": "art/user-assets/clues/bear.jpg",
       "runtime": "public/assets/clues/bear.webp",
       "losslessBytes": 89062,
@@ -619,34 +602,6 @@
       "losslessBytes": 67112,
       "encodedBytes": 18778,
       "visibleWeightedMae": 2.703
-    },
-    {
-      "source": "art/user-assets/ui/tiny_flower.png",
-      "runtime": "public/assets/ui/tiny_flower.webp",
-      "losslessBytes": 37588,
-      "encodedBytes": 12498,
-      "visibleWeightedMae": 3.366
-    },
-    {
-      "source": "art/user-assets/ui/tiny_leaf.png",
-      "runtime": "public/assets/ui/tiny_leaf.webp",
-      "losslessBytes": 24398,
-      "encodedBytes": 9448,
-      "visibleWeightedMae": 3.529
-    },
-    {
-      "source": "art/user-assets/ui/tiny_sparkle.png",
-      "runtime": "public/assets/ui/tiny_sparkle.webp",
-      "losslessBytes": 30866,
-      "encodedBytes": 10452,
-      "visibleWeightedMae": 2.927
-    },
-    {
-      "source": "art/runtime-sources/environment/gameplay_plate.png",
-      "runtime": "public/assets/environment/gameplay_plate.webp",
-      "losslessBytes": 1663024,
-      "encodedBytes": 248166,
-      "visibleWeightedMae": 1.779
     },
     {
       "source": "art/runtime-sources/ui/sakura_seal.png",

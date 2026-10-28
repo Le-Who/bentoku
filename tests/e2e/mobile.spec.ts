@@ -175,6 +175,28 @@ test('completes a real puzzle and can start the next bento', async ({ page }) =>
   await expect(dialog.getByText('Bento complete!', { exact: true })).toBeVisible();
   await page.setViewportSize({ width: 1280, height: 900 });
   await expect(page.locator('.mobile-shell')).toBeHidden();
+  await expect(page.locator('html')).toHaveAttribute('data-desktop-theme', 'porcelain', {
+    timeout: 20_000,
+  });
+  await expect(page.locator('.desktop-theme-loading')).toBeHidden();
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const scene = window.__BENTOKU_GAME__.scene.getScene('PuzzleScene') as unknown as {
+          solved: boolean;
+          modal?: unknown;
+          pieces: Map<string, { sprite: { texture: { key: string } } }>;
+        };
+        return (
+          scene.solved &&
+          Boolean(scene.modal) &&
+          [...scene.pieces.values()].every(({ sprite }) =>
+            sprite.texture.key.startsWith('skin_porcelain_piece_'),
+          )
+        );
+      }),
+    )
+    .toBe(true);
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(dialog.getByText('Bento complete!', { exact: true })).toBeVisible();
   await dialog.getByRole('button', { name: 'Close', exact: true }).tap();

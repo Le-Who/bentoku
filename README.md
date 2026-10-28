@@ -35,6 +35,8 @@ The 12,500-puzzle suite is part of `pnpm test` and covers all five difficulty le
 
 On Windows, stop the local dev and preview servers before `pnpm assets:build` so they release open image files.
 
+Normal startup loads the shared clue/completion images and the selected theme. Desktop does not download the mobile inventory tray. Both presentations share an image cache for the current document, so completed and in-flight images are reused, and a partial theme failure retries only missing images. Browser caching handles later page visits according to the hosting server's cache headers. Settings loads three small theme previews on demand. The production asset test checks the exact public file inventory, including audio and the font license, to catch orphaned files. Retired original piece/environment art and pre-theme decorations are excluded from asset generation and delivery; editable sources remain outside the shipped directory. Initial loading and error recovery use a plain surface and a retry message without a second raster skin.
+
 ## Architecture
 
 - Phaser 4.2.1 canvas game

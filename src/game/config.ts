@@ -13,6 +13,8 @@ export const createGameConfig = (): Phaser.Types.Core.GameConfig => ({
   transparent: false,
   antialias: true,
   roundPixels: false,
+  // Keep the original image URL in the browser image cache for DOM/SVG reuse.
+  loader: { imageLoadType: 'HTMLImageElement' },
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,

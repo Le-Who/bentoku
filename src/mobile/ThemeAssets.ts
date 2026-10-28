@@ -1,6 +1,7 @@
 import { ANIMALS, FOODS, type PieceId } from '../puzzle/types';
 import type { VisualTheme } from '../game/VisualTheme';
 import { themePieceCenters } from './theme-piece-centers';
+import { loadImageAsset } from '../services/ImageAssetCache';
 
 const pending = new Map<VisualTheme, Promise<void>>();
 
@@ -11,7 +12,7 @@ export const themeBoardCenters = {
   porcelain: { columns: [19.4, 50.1, 80.5], rows: [19.2, 49.4, 79.8] },
   maple: { columns: [20.1, 50.2, 80.3], rows: [19.5, 49.1, 78.9] },
 } as const;
-const materials = [
+export const MOBILE_THEME_MATERIALS = [
   'background',
   'board',
   'panel',
@@ -40,20 +41,10 @@ export function loadThemeAssets(theme: VisualTheme): Promise<void> {
   const existing = pending.get(theme);
   if (existing) return existing;
   const urls = [
-    ...materials.map((name) => `assets/themes/${theme}/${name}.webp`),
+    ...MOBILE_THEME_MATERIALS.map((name) => `assets/themes/${theme}/${name}.webp`),
     ...ANIMALS.flatMap((animal) => FOODS.map((food) => themePieceUrl(theme, `${animal}_${food}`))),
   ];
-  const loading = Promise.all(
-    urls.map(
-      (url) =>
-        new Promise<void>((resolve, reject) => {
-          const image = new Image();
-          image.onload = () => resolve();
-          image.onerror = () => reject(new Error(`Unable to load ${url}`));
-          image.src = url;
-        }),
-    ),
-  )
+  const loading = Promise.all(urls.map(loadImageAsset))
     .then(() => undefined)
     .catch((error) => {
       pending.delete(theme);

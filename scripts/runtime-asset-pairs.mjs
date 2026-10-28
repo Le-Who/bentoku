@@ -6,11 +6,7 @@ const jobs = [
     [`art/runtime-sources/themes/${theme}`, `public/assets/themes/${theme}`],
     [`art/runtime-sources/themes/${theme}/pieces`, `public/assets/themes/${theme}/pieces`],
   ]),
-  ['art/runtime-sources/mobile', 'public/assets/mobile'],
-  ['art/user-assets/pieces', 'public/assets/pieces'],
   ['art/user-assets/clues', 'public/assets/clues'],
-  ['art/user-assets/ui', 'public/assets/ui'],
-  ['art/runtime-sources/environment', 'public/assets/environment', ['gameplay_plate.png']],
   ['art/runtime-sources/ui', 'public/assets/ui', ['sakura_seal.png', 'success_stamp.png']],
 ];
 

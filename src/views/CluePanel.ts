@@ -55,9 +55,7 @@ export class CluePanel extends Phaser.GameObjects.Container {
         letterSpacing: 2,
       })
       .setOrigin(0.5);
-    const flower = scene.add.image(-150, -297, 'tiny_flower').setDisplaySize(27, 27).setAngle(-8);
-    const leaf = scene.add.image(151, -297, 'tiny_leaf').setDisplaySize(25, 25).setAngle(13);
-    this.add([flower, leaf, title]);
+    this.add(title);
 
     const anchor = clues.find((clue) => clue.id === 'anchor-map');
     const spatial = clues.filter((clue) => clue.id !== 'anchor-map').slice(0, 6);

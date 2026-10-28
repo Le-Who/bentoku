@@ -65,11 +65,12 @@ test('loads only WebP artwork without console errors', async ({ page }) => {
       .map((entry) => entry.name)
       .filter((name) => /\.(webp|png|jpe?g)(\?|$)/i.test(name)),
   );
-  // Base art remains available as themed art is loaded on demand.
+  // Normal play loads the chosen skin; original art is reserved for recovery.
   expect(requests.length).toBeGreaterThanOrEqual(24);
-  expect(requests.some((name) => name.includes('/assets/pieces/'))).toBe(true);
+  expect(requests.some((name) => name.includes('/assets/pieces/'))).toBe(false);
+  expect(requests.some((name) => name.includes('/themes/porcelain/pieces/'))).toBe(true);
   expect(requests.some((name) => name.includes('/assets/clues/'))).toBe(true);
-  expect(requests.some((name) => name.includes('/assets/environment/'))).toBe(true);
+  expect(requests.some((name) => name.includes('/assets/environment/'))).toBe(false);
   expect(requests.every((name) => name.endsWith('.webp'))).toBe(true);
   expect(errors).toEqual([]);
   const musicRequests = await page.evaluate(() =>

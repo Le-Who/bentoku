@@ -25,7 +25,7 @@ import { BentoBoard } from '../views/BentoBoard';
 import { CelebrationView } from '../views/CelebrationView';
 import { CluePanel } from '../views/CluePanel';
 import { InventoryPanel } from '../views/InventoryPanel';
-import { getPieceVisualLayout, PieceView } from '../views/PieceView';
+import { PieceView } from '../views/PieceView';
 import { MobileGameView } from '../mobile/MobileGameView';
 import { MobileDialog } from '../mobile/MobileDialog';
 import { loadDesktopTheme } from '../game/DesktopThemeLoader';
@@ -224,7 +224,7 @@ export class PuzzleScene extends Phaser.Scene {
 
     if (this.desktopTheme) drawDesktopSurface(this, this.desktopTheme);
     else {
-      this.add.image(800, 450, 'gameplay_plate').setDisplaySize(1600, 900);
+      this.add.rectangle(800, 450, 1600, 900, COLORS.milk);
       this.add
         .text(54, 38, 'Bentoku', {
           fontFamily: FONT_DISPLAY,
@@ -564,6 +564,7 @@ export class PuzzleScene extends Phaser.Scene {
       return;
     }
     this.desktopReadyTheme = undefined;
+    const firstDesktopTheme = !this.desktopTheme;
     const selected = this.selectedPiece;
     this.cancelLegacyPress();
     this.selectedPiece = selected;
@@ -572,6 +573,8 @@ export class PuzzleScene extends Phaser.Scene {
     this.renderScene();
     this.mobile?.dialog.themeStatus('', theme);
     this.desktopLoading.hidden = true;
+    if (firstDesktopTheme && this.solved && !this.mobile?.active && !this.modal)
+      this.showCompletion();
   }
 
   private async prepareDesktopTheme(theme: VisualTheme): Promise<void> {
@@ -700,6 +703,9 @@ export class PuzzleScene extends Phaser.Scene {
   }
 
   private showCompletion(): void {
+    // A first desktop visit may happen after the puzzle was completed on mobile.
+    // Its completion panel must wait for the matching desktop artwork.
+    if (!this.mobile?.active && !this.desktopTheme) return;
     this.closeModal();
     if (this.mobile?.active) {
       this.openModal('Bento complete!', 'A tiny tray of very happy friends.', [
@@ -1109,6 +1115,7 @@ export class PuzzleScene extends Phaser.Scene {
       this.mobile.showHint(pieceId, index);
       return;
     }
+    if (!this.desktopTheme) return;
 
     const position = this.bento.slotWorldPosition(index);
     slot.setHighlighted(true, true);
@@ -1123,15 +1130,9 @@ export class PuzzleScene extends Phaser.Scene {
     ring.lineStyle(7, COLORS.honey, 0.96);
     ring.strokeRoundedRect(-76, -76, 152, 152, 28);
 
-    const visual = this.desktopTheme
-      ? getThemedPieceVisualLayout(this.desktopTheme, pieceId, 158)
-      : getPieceVisualLayout(pieceId);
+    const visual = getThemedPieceVisualLayout(this.desktopTheme, pieceId, 158);
     const ghost = this.add
-      .image(
-        visual.x,
-        visual.y,
-        this.desktopTheme ? themeTexture(this.desktopTheme, `piece_${pieceId}`) : piece.textureKey,
-      )
+      .image(visual.x, visual.y, themeTexture(this.desktopTheme, `piece_${pieceId}`))
       .setDisplaySize(visual.size, visual.size)
       .setAlpha(0.78)
       .setName('hint-piece-image');
