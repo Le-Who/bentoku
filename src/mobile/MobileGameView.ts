@@ -175,8 +175,11 @@ export class MobileGameView {
       for (const piece of state.puzzle.pieces) {
         const pocket = element('div', 'mobile-pocket');
         pocket.dataset.pocket = piece.id;
-        pocket.style.gridColumn = String(ANIMALS.indexOf(piece.animal) + 1);
-        pocket.style.gridRow = String(FOODS.indexOf(piece.food) + 1);
+        const family = ANIMALS.indexOf(piece.animal);
+        const food = FOODS.indexOf(piece.food);
+        pocket.style.setProperty('--family-column', String(family + 1));
+        pocket.style.setProperty('--food-row', String(food + 1));
+        pocket.style.order = String(family * FOODS.length + food);
         const target = button('', 'mobile-pocket-target');
         target.setAttribute(
           'aria-label',
@@ -454,13 +457,25 @@ export class MobileGameView {
     this.root.classList.toggle('is-compact', !landscape && height <= 620);
     this.root.style.setProperty('--mobile-height', `${height}px`);
     const count = this.state?.puzzle.clues.length ?? 7;
-    this.root.style.setProperty(
-      '--notes-height',
-      `${Math.max(128, Math.min(count > 5 ? 190 : 152, height * (count > 5 ? 0.24 : 0.2) - 10))}px`,
+    const notesHeight = Math.max(
+      128,
+      Math.min(count > 5 ? 190 : 152, height * (count > 5 ? 0.24 : 0.2) - 10),
     );
+    this.root.style.setProperty('--notes-height', `${notesHeight}px`);
+    // Give the twelve friends more room, while retaining a usable board on
+    // short phones and respecting the device's actual safe-area padding.
+    const style = getComputedStyle(this.root);
+    const boardAndTrayHeight =
+      height -
+      parseFloat(style.paddingTop) -
+      parseFloat(style.paddingBottom) -
+      this.root.querySelector<HTMLElement>('.mobile-header')!.getBoundingClientRect().height -
+      this.undoButton.parentElement!.getBoundingClientRect().height -
+      notesHeight -
+      parseFloat(style.rowGap) * 4;
     this.root.style.setProperty(
       '--tray-height',
-      `${Math.max(148, Math.min(300, height * 0.27))}px`,
+      `${Math.max(148, Math.min(360, height * 0.32, boardAndTrayHeight - 160))}px`,
     );
     if (changed && this.state) this.update(this.state);
   }
@@ -507,14 +522,17 @@ export class MobileGameView {
       ghost.removeAttribute('data-piece-id');
       ghost.setAttribute('aria-hidden', 'true');
       const bounds = press.source.getBoundingClientRect();
-      ghost.style.width = `${bounds.width}px`;
-      ghost.style.height = `${bounds.height}px`;
+      // A lifted friend stays legible even when its source is a compact pocket.
+      const size = Math.max(76, Math.min(112, Math.max(bounds.width, bounds.height)));
+      ghost.style.width = `${size}px`;
+      ghost.style.height = `${size}px`;
       document.body.append(ghost);
       press.ghost = ghost;
       press.source.classList.add('is-dragging');
     }
     press.ghost.style.left = `${event.clientX}px`;
-    press.ghost.style.top = `${event.clientY - (event.pointerType === 'touch' ? 32 : 8)}px`;
+    const lift = event.pointerType === 'touch' ? Math.max(48, press.ghost.offsetHeight * 0.7) : 8;
+    press.ghost.style.top = `${event.clientY - lift}px`;
     this.root.querySelector('.is-drop-target')?.classList.remove('is-drop-target');
     document
       .elementFromPoint(event.clientX, event.clientY)

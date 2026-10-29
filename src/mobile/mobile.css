@@ -17,8 +17,8 @@
   display: grid;
   grid-template:
     'header' 44px 'notes' var(--notes-height) 'board' minmax(160px, 1fr)
-    'tray' var(--tray-height) 'tools' 48px / minmax(0, 1fr);
-  gap: 6px;
+    'tray' var(--tray-height) 'tools' 44px / minmax(0, 1fr);
+  gap: 4px;
   overflow: auto;
   overflow-x: hidden;
   color: var(--indigo);
@@ -251,6 +251,8 @@
 }
 .mobile-pocket {
   position: relative;
+  grid-column: var(--family-column);
+  grid-row: var(--food-row);
   min-width: 0;
   min-height: 0;
   border-radius: 9px 9px 18px 18px;
@@ -299,7 +301,7 @@
 }
 .mobile-piece-art {
   position: absolute;
-  width: min(100cqw, 100cqh);
+  width: min(104cqw, 104cqh);
   left: var(--piece-x, 50%);
   top: var(--piece-y, 50%);
   max-width: none;
@@ -310,6 +312,11 @@
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
+}
+/* Use the transparent sprite margins so friends on the slightly more compact
+   board retain their visible size as the inventory gains room. */
+.mobile-cell .mobile-piece-art {
+  width: min(112cqw, 112cqh);
 }
 .mobile-pocket .mobile-piece {
   bottom: 0;
@@ -494,9 +501,17 @@
   width: min(100%, 450px);
   justify-self: center;
 }
+.mobile-shell.is-landscape .mobile-tray {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+.mobile-shell.is-landscape .mobile-pocket {
+  grid-column: auto;
+  grid-row: auto;
+}
 .mobile-shell.is-short-landscape {
   grid-template:
-    'board header' 44px 'board notes' minmax(80px, 1fr) 'board tray' 136px / minmax(0, 0.9fr)
+    'board header' 44px 'board notes' minmax(80px, 1fr) 'board tray' 112px / minmax(0, 0.9fr)
     minmax(0, 1.1fr);
 }
 .mobile-shell.is-short-landscape .mobile-board-wrap {

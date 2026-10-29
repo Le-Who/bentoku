@@ -467,7 +467,12 @@
 }
 .mobile-shell[data-theme].is-landscape .mobile-tray {
   width: 100%;
-  padding: 3px 4px;
+  padding: 3px 2px;
+  gap: 3px;
+}
+.mobile-shell[data-theme].is-landscape .mobile-pocket {
+  width: min(calc((100cqw - 15px) / 6), calc((100cqh - 3px) / 2));
+  height: min(calc((100cqw - 15px) / 6), calc((100cqh - 3px) / 2));
 }
 .mobile-shell[data-theme].is-short-landscape .mobile-board-wrap {
   padding-bottom: 52px;
