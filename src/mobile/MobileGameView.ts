@@ -12,6 +12,7 @@ import {
 } from './MobileDialog';
 import './mobile.css';
 import './theme-skins.css';
+import './theme-button-centers.css';
 
 export interface MobileState {
   puzzle: PuzzleDefinition;
@@ -58,11 +59,19 @@ const icons: Record<string, string> = {
     '<rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 2v6m8-6v6M4 11h16m-12 4h2m4 0h2"/>',
 };
 
+// Preserve the 24-unit scale while centering each drawing's painted bounds.
+const iconViewBoxes: Record<string, string> = {
+  settings: '0 -2.2 24 24',
+  undo: '-0.5 -0.5 24 24',
+  hint: '0 -1.3723 24 24',
+  daily: '0 -0.5 24 24',
+};
+
 function iconButton(label: string, name: string, action: () => void): HTMLButtonElement {
   const node = button('', 'mobile-icon-button', action);
   node.setAttribute('aria-label', label);
   node.title = label;
-  node.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${icons[name]}</svg>`;
+  node.firstElementChild!.innerHTML = `<svg viewBox="${iconViewBoxes[name]}" aria-hidden="true">${icons[name]}</svg>`;
   return node;
 }
 
@@ -125,12 +134,16 @@ export class MobileGameView {
     this.tray.setAttribute('aria-label', 'Bento friends. Choose three complete families.');
     const toolbar = element('footer', 'mobile-toolbar');
     this.undoButton = button('Undo', 'mobile-control mobile-undo', actions.undo);
-    this.undoButton.prepend(iconButton('Undo icon', 'undo', () => {}).firstChild!);
+    this.undoButton.firstElementChild!.prepend(
+      iconButton('Undo icon', 'undo', () => {}).querySelector('svg')!,
+    );
     const help = button('Hint', 'mobile-control is-primary', () =>
       this.state?.solved ? actions.next() : actions.help(),
     );
     this.helpButton = help;
-    help.prepend(iconButton('Hint icon', 'hint', () => {}).firstChild!);
+    help.firstElementChild!.prepend(
+      iconButton('Hint icon', 'hint', () => {}).querySelector('svg')!,
+    );
     toolbar.append(this.undoButton, help);
     this.root.append(header, this.notes, boardWrap, this.tray, toolbar);
     document.getElementById('app')!.append(this.root);
@@ -157,12 +170,12 @@ export class MobileGameView {
     this.prepareTheme(state.theme);
     const newPuzzle = this.renderedPuzzle !== state.puzzle;
     this.renderedPuzzle = state.puzzle;
-    this.level.textContent = `${state.puzzle.difficulty} ⌄`;
+    this.level.firstElementChild!.textContent = `${state.puzzle.difficulty} ⌄`;
     this.root.classList.toggle('reduced-motion', state.reducedMotion);
     this.undoButton.disabled = !state.canUndo || state.solved;
     const helpLabel = state.solved ? 'Next bento' : 'Hint';
-    if (this.helpButton.lastChild?.nodeType === Node.TEXT_NODE)
-      this.helpButton.lastChild.textContent = helpLabel;
+    const helpText = this.helpButton.firstElementChild!.lastChild;
+    if (helpText?.nodeType === Node.TEXT_NODE) helpText.textContent = helpLabel;
     if (newPuzzle) {
       this.cancelDrag();
       this.root

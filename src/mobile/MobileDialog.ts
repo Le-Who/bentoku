@@ -26,7 +26,10 @@ export function element<K extends keyof HTMLElementTagNameMap>(
 }
 
 export function button(label: string, className: string, action?: () => void): HTMLButtonElement {
-  const node = element('button', className, label);
+  const node = element('button', className);
+  if (node.matches('.mobile-control, .mobile-level, .mobile-icon-button'))
+    node.append(element('span', 'mobile-button-content', label));
+  else node.textContent = label;
   node.type = 'button';
   if (action) node.addEventListener('click', action);
   return node;

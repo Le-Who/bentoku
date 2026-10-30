@@ -81,6 +81,9 @@
 }
 .mobile-level,
 .mobile-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 44px;
   border: 1px solid #eee5d075;
   border-radius: 14px;
@@ -90,14 +93,28 @@
 }
 .mobile-level {
   min-width: 76px;
-  padding: 0 8px;
+  padding: 0;
+  --button-padding: 0 8px;
   font-size: 13px !important;
   font-weight: bold !important;
 }
 .mobile-icon-button {
   flex: 0 0 44px;
   width: 44px;
-  padding: 10px;
+  padding: 0;
+}
+.mobile-button-content {
+  /* Padding belongs to the content so percentage offsets follow the whole
+     painted button, while its art, focus ring and touch target stay fixed. */
+  position: relative;
+  left: var(--button-offset-x, 0%);
+  top: var(--button-offset-y, 0%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: inherit;
+  padding: var(--button-padding, 0);
+  pointer-events: none;
 }
 .mobile-shell svg:not(.mobile-clue-grid),
 .mobile-dialog svg:not(.mobile-clue-grid) {
@@ -362,7 +379,8 @@
   border-radius: 15px;
   background: #c7d2e0;
   color: #283f5b;
-  padding: 9px 12px;
+  padding: 0;
+  --button-padding: 9px 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -528,7 +546,7 @@
   height: 44px;
 }
 .mobile-shell.is-short-landscape .mobile-toolbar .mobile-control {
-  padding: 7px;
+  --button-padding: 7px;
   gap: 5px;
   font-size: 14px !important;
 }
@@ -537,7 +555,7 @@
 }
 .mobile-shell.is-short-landscape .mobile-level {
   min-width: 68px;
-  padding: 0 4px;
+  --button-padding: 0 4px;
 }
 
 @media (prefers-reduced-motion: reduce) {

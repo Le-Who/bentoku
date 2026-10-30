@@ -712,3 +712,64 @@ test('returning to mobile can retry a failed new theme without losing the puzzle
     ),
   ).toBe('maple');
 });
+
+test('desktop button contents follow the painted face instead of the cast shadow', async ({
+  page,
+}) => {
+  const { paintedButtonBounds } = await import('./button-geometry');
+  await page.goto('/?seed=BENTO-MAX1-60BE&difficulty=master');
+  await ready(page);
+  for (const [id, name] of themes) {
+    await chooseTheme(page, name, id);
+    const surfaces = {
+      well: await paintedButtonBounds(id, 'well'),
+      primary: await paintedButtonBounds(id, 'button-primary'),
+      secondary: await paintedButtonBounds(id, 'button-secondary'),
+    };
+    const errors = await page.evaluate((surfaces) => {
+      type Node = {
+        type: string;
+        input?: unknown;
+        x: number;
+        y: number;
+        list?: Node[];
+        text?: string;
+        texture?: { key: string };
+        displayWidth: number;
+        displayHeight: number;
+      };
+      const scene = window.__BENTOKU_GAME__.scene.getScene('PuzzleScene');
+      return (scene.children.list as unknown as Node[]).flatMap((node) => {
+        if (!node.input) return [];
+        const material = node.list?.find((child) =>
+          /_(well|button-primary|button-secondary)$/.test(child.texture?.key ?? ''),
+        );
+        const text = node.list?.find((child) => child.type === 'Text');
+        if (!material || !text) return [];
+        const icon = material.texture!.key.endsWith('_well');
+        const surface = icon
+          ? surfaces.well
+          : material.texture!.key.endsWith('_button-primary')
+            ? surfaces.primary
+            : surfaces.secondary;
+        // Nine-slice leaves both opaque edge insets intact at the uniform height scale.
+        const xScale = icon
+          ? material.displayWidth / surface.width
+          : material.displayHeight / surface.height;
+        const yScale = material.displayHeight / surface.height;
+        return [
+          {
+            label: text.text,
+            x: text.x - material.x - (surface.x - surface.width / 2) * xScale,
+            y: text.y - material.y - (surface.y - surface.height / 2) * yScale,
+          },
+        ];
+      });
+    }, surfaces);
+    expect(errors.length).toBeGreaterThanOrEqual(5);
+    for (const error of errors) {
+      expect(Math.abs(error.x), `${id} ${error.label} horizontal painted center`).toBeLessThan(0.1);
+      expect(Math.abs(error.y), `${id} ${error.label} vertical painted center`).toBeLessThan(0.1);
+    }
+  }
+});

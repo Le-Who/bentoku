@@ -28,6 +28,7 @@ import { InventoryPanel } from '../views/InventoryPanel';
 import { PieceView } from '../views/PieceView';
 import { MobileGameView } from '../mobile/MobileGameView';
 import { MobileDialog } from '../mobile/MobileDialog';
+import { themedButtonContentOffset } from '../game/ButtonGeometry';
 import { loadDesktopTheme } from '../game/DesktopThemeLoader';
 import {
   addThemedMaterial,
@@ -814,8 +815,15 @@ export class PuzzleScene extends Phaser.Scene {
     background.fillRoundedRect(-spec.width / 2, -height / 2, spec.width, height, height / 2);
     background.lineStyle(2, spec.primary ? COLORS.blush : COLORS.sage, 0.3);
     background.strokeRoundedRect(-spec.width / 2, -height / 2, spec.width, height, height / 2);
+    const content = this.desktopTheme
+      ? themedButtonContentOffset(
+          this.desktopTheme,
+          spec.icon ? 'well' : spec.primary ? 'button-primary' : 'button-secondary',
+          spec.icon ? height : height + 8,
+        )
+      : { x: 0, y: spec.icon ? -1 : 0 };
     const text = this.add
-      .text(0, spec.icon ? -1 : 0, spec.label, {
+      .text(content.x, content.y, spec.label, {
         fontFamily: skin?.font ?? FONT_BODY,
         fontSize: spec.icon ? '24px' : '16px',
         fontStyle: 'bold',

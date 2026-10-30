@@ -48,7 +48,7 @@
 }
 .mobile-theme-loading.is-retry-banner .mobile-control {
   min-height: 44px;
-  padding: 8px 10px;
+  --button-padding: 8px 10px;
   font-size: 14px;
 }
 .mobile-theme-dismiss {

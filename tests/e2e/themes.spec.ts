@@ -373,3 +373,87 @@ for (const [id, name] of [
     }
   });
 }
+
+for (const [id, name] of [
+  ['picnic', 'Picnic Postcards'],
+  ['porcelain', 'Porcelain Logic'],
+  ['maple', 'Maple Counter'],
+] as const) {
+  test(`${id}: button contents follow the painted face instead of the cast shadow`, async ({
+    page,
+  }) => {
+    const { paintedButtonBounds } = await import('./button-geometry');
+    const surfaces = {
+      well: await paintedButtonBounds(id, 'well'),
+      primary: await paintedButtonBounds(id, 'button-primary'),
+      secondary: await paintedButtonBounds(id, 'button-secondary'),
+    };
+    await chooseTheme(page, name, id);
+    for (const [width, height] of [
+      [320, 568],
+      [390, 844],
+      [568, 320],
+    ] as const) {
+      await page.setViewportSize({ width, height });
+      await page.evaluate(() => document.fonts.ready);
+      await page.evaluate(
+        () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
+      );
+      await page.getByRole('button', { name: 'Settings', exact: true }).tap();
+      const errors = await page
+        .locator(
+          '.mobile-header button, .mobile-toolbar button, .mobile-dialog[open] .mobile-control',
+        )
+        .evaluateAll(
+          (buttons, surfaces) =>
+            buttons.map((button) => {
+              const box = button.getBoundingClientRect();
+              const icon = button.classList.contains('mobile-icon-button');
+              const surface = icon
+                ? surfaces.well
+                : button.classList.contains('is-primary')
+                  ? surfaces.primary
+                  : surfaces.secondary;
+              const scale = Math.min(box.width / surface.width, box.height / surface.height);
+              const artWidth = icon ? surface.width * scale : box.width;
+              const artHeight = icon ? surface.height * scale : box.height;
+              const range = document.createRange();
+              range.selectNodeContents(button);
+              const content = range.getBoundingClientRect();
+              let contentX = content.x + content.width / 2;
+              let contentY = content.y + content.height / 2;
+              if (icon) {
+                const svg = button.querySelector('svg')!;
+                const drawing = svg.getBBox();
+                const point = new DOMPoint(
+                  drawing.x + drawing.width / 2,
+                  drawing.y + drawing.height / 2,
+                ).matrixTransform(svg.getScreenCTM()!);
+                contentX = point.x;
+                contentY = point.y;
+              }
+              return {
+                label: button.getAttribute('aria-label') || button.textContent,
+                x:
+                  contentX - (box.x + box.width / 2 + (surface.x / surface.width - 0.5) * artWidth),
+                y:
+                  contentY -
+                  (box.y + box.height / 2 + (surface.y / surface.height - 0.5) * artHeight),
+              };
+            }),
+          surfaces,
+        );
+      for (const error of errors) {
+        expect(
+          Math.abs(error.x),
+          `${id} ${width}x${height} ${error.label} horizontal painted center`,
+        ).toBeLessThan(0.5);
+        expect(
+          Math.abs(error.y),
+          `${id} ${width}x${height} ${error.label} vertical painted center`,
+        ).toBeLessThan(0.5);
+      }
+      await page.getByRole('button', { name: 'Close', exact: true }).tap();
+    }
+  });
+}
