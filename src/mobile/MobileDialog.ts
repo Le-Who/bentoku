@@ -60,6 +60,9 @@ export class MobileDialog {
     sliders: readonly MobileSlider[] = [],
   ): HTMLElement {
     this.onClose = onClose;
+    // A delayed theme response may open a native modal after the Hub paused.
+    // Native modal dialogs escape ancestor inertness, so gate the dialog too.
+    this.node.inert = document.documentElement.dataset.hubPaused === 'true';
     this.content.replaceChildren();
     const heading = element('h2', 'mobile-dialog-title', title);
     heading.id = this.titleId;

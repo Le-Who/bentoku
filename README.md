@@ -18,6 +18,25 @@ Bentoku is a finished client-side browser puzzle about arranging nine tiny kawai
 
 ## Development
 
+### Telegram Game Hub embedding
+
+CC-GH opens the existing Vercel deployment with `?embed=ccgh` inside its
+Telegram Mini App. The Hub owns the Telegram SDK, Back/Home controls and safe
+areas; the game remains independently deployed and keeps its ordinary local
+saves. No shared currency, achievements or Telegram/user data are exchanged.
+
+`src/platform/HubBridge.ts` validates the parent window and its referrer origin
+before accepting version-1 visibility messages. While the Hub catalogue or
+host page is hidden, the game pauses rendering and audio, cancels unfinished
+drags, closes game dialogs and disables input. Returning resumes the same
+puzzle. Ordinary top-level browser play remains unchanged.
+
+Publish this bridge on Vercel before enabling the Bentoku card in CC-GH; the
+host waits for its readiness handshake. `tests/hub-bridge.test.ts` covers the
+protocol and invalid parent/message cases.
+
+### Local development
+
 ```bash
 pnpm install
 pnpm exec playwright install chromium

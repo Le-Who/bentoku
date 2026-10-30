@@ -452,13 +452,16 @@ export class MobileGameView {
     const width = window.visualViewport?.width ?? window.innerWidth;
     const preview = forced && !this.media.matches;
     const landscape = !preview && height <= 520 && Math.min(width, 1100) > height;
+    const hubCompact =
+      !landscape && height <= 560 && document.documentElement.dataset.hubEmbedded === 'true';
     this.root.classList.toggle('is-landscape', landscape);
     this.root.classList.toggle('is-short-landscape', landscape && height <= 360);
     this.root.classList.toggle('is-compact', !landscape && height <= 620);
+    this.root.classList.toggle('is-hub-compact', hubCompact);
     this.root.style.setProperty('--mobile-height', `${height}px`);
     const count = this.state?.puzzle.clues.length ?? 7;
     const notesHeight = Math.max(
-      128,
+      hubCompact ? 112 : 128,
       Math.min(count > 5 ? 190 : 152, height * (count > 5 ? 0.24 : 0.2) - 10),
     );
     this.root.style.setProperty('--notes-height', `${notesHeight}px`);
@@ -475,7 +478,7 @@ export class MobileGameView {
       parseFloat(style.rowGap) * 4;
     this.root.style.setProperty(
       '--tray-height',
-      `${Math.max(148, Math.min(360, height * 0.32, boardAndTrayHeight - 160))}px`,
+      `${Math.max(hubCompact ? 132 : 148, Math.min(360, height * 0.32, boardAndTrayHeight - (hubCompact ? 140 : 160)))}px`,
     );
     if (changed && this.state) this.update(this.state);
   }
@@ -557,6 +560,10 @@ export class MobileGameView {
       window.setTimeout(() => {
         this.suppressClick = false;
       }, 0);
+  }
+
+  cancelInteraction(): void {
+    this.cancelDrag();
   }
 
   private cancelDrag(): void {

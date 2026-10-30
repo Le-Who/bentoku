@@ -490,6 +490,9 @@
 .mobile-shell.is-compact .mobile-level {
   height: 40px;
 }
+.mobile-shell.is-hub-compact {
+  grid-template-rows: 40px var(--notes-height) minmax(140px, 1fr) var(--tray-height) 44px;
+}
 .mobile-shell.is-landscape {
   width: min(1100px, 100%);
   grid-template:

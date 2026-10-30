@@ -638,6 +638,12 @@ export class PuzzleScene extends Phaser.Scene {
     if (this.pendingDesktopTheme) this.desktopDialog.themeStatus('Loading this look…');
   }
 
+  suspendForHub(): void {
+    this.cancelLegacyPress();
+    this.mobile?.cancelInteraction();
+    this.closeModal();
+  }
+
   private cancelLegacyPress(): void {
     const drag = this.dragging;
     if (drag) {
