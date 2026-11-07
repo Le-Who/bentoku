@@ -50,6 +50,11 @@ async function chooseTheme(page: Page, name: string, id: Theme) {
   await expect(page.locator('html')).toHaveAttribute('data-desktop-theme', id, { timeout: 20_000 });
   await dialog.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(dialog).toBeHidden();
+  // Native close restores focus after visibility changes; a key sent earlier
+  // still targets the hidden dialog and is stopped by its keyboard isolation.
+  await expect
+    .poll(() => dialog.evaluate((node) => !node.contains(document.activeElement)))
+    .toBe(true);
 }
 
 test('cold desktop loads only its required WebP artwork', async ({ page }, testInfo) => {
