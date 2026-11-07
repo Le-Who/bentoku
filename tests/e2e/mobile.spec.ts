@@ -175,7 +175,7 @@ test('completes a real puzzle and can start the next bento', async ({ page }) =>
   await expect(dialog.getByText('Bento complete!', { exact: true })).toBeVisible();
   await page.setViewportSize({ width: 1280, height: 900 });
   await expect(page.locator('.mobile-shell')).toBeHidden();
-  await expect(page.locator('html')).toHaveAttribute('data-desktop-theme', 'porcelain', {
+  await expect(page.locator('html')).toHaveAttribute('data-desktop-theme', 'picnic', {
     timeout: 20_000,
   });
   await expect(page.locator('.desktop-theme-loading')).toBeHidden();
@@ -191,7 +191,7 @@ test('completes a real puzzle and can start the next bento', async ({ page }) =>
           scene.solved &&
           Boolean(scene.modal) &&
           [...scene.pieces.values()].every(({ sprite }) =>
-            sprite.texture.key.startsWith('skin_porcelain_piece_'),
+            sprite.texture.key.startsWith('skin_picnic_piece_'),
           )
         );
       }),
