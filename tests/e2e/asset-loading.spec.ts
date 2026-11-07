@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 const seed = '/?seed=BENTO-E2E-0001&difficulty=gentle';
-type Theme = 'porcelain' | 'maple';
+type Theme = 'picnic' | 'porcelain' | 'maple';
 
 async function ready(page: Page) {
   await expect(page.locator('canvas')).toBeVisible();
@@ -20,7 +20,7 @@ async function ready(page: Page) {
       ),
     )
     .toBe(true);
-  await expect(page.locator('html')).toHaveAttribute('data-desktop-theme', 'porcelain', {
+  await expect(page.locator('html')).toHaveAttribute('data-desktop-theme', 'picnic', {
     timeout: 20_000,
   });
 }
@@ -80,12 +80,11 @@ test('cold desktop loads only its required WebP artwork', async ({ page }, testI
   expect(images.filter((url) => /\/assets\/themes\/[^/]+\/tray\.webp$/.test(url))).toEqual([]);
   expect(
     images.filter(
-      (url) => /\/assets\/themes\/(?:picnic|maple)\//.test(url) && !url.endsWith('/preview.webp'),
+      (url) =>
+        /\/assets\/themes\/(?:porcelain|maple)\//.test(url) && !url.endsWith('/preview.webp'),
     ),
   ).toEqual([]);
-  expect(images.some((url) => url.endsWith('/themes/porcelain/desktop-background.webp'))).toBe(
-    true,
-  );
+  expect(images.some((url) => url.endsWith('/themes/picnic/desktop-background.webp'))).toBe(true);
 });
 
 test('revisiting a theme and reopening settings makes no repeat theme image wire loads', async ({
@@ -107,7 +106,7 @@ test('revisiting a theme and reopening settings makes no repeat theme image wire
   expect(initialLoads.some((bytes) => bytes > 0)).toBe(true);
   await page.evaluate(() => performance.clearResourceTimings());
 
-  await chooseTheme(page, 'Porcelain Logic', 'porcelain');
+  await chooseTheme(page, 'Picnic Postcards', 'picnic');
   const dialog = await openSettings(page);
   await dialog.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(dialog).toBeHidden();
@@ -154,7 +153,7 @@ test('retry after one failed theme image requests only that image again', async 
   });
   await dialog.getByRole('radio', { name: /Maple Counter/ }).click();
   await expect(dialog.getByRole('status')).toContainText(/could not load/i, { timeout: 20_000 });
-  await expect(dialog.getByRole('radio', { name: /Porcelain Logic/ })).toBeChecked();
+  await expect(dialog.getByRole('radio', { name: /Picnic Postcards/ })).toBeChecked();
   await page.waitForLoadState('networkidle');
   await expect.poll(() => completed.size).toBe(counts.size - 1);
   expect(counts.size).toBeGreaterThanOrEqual(20);
@@ -183,7 +182,7 @@ test('switching to mobile reuses clue images already loaded by the canvas', asyn
   await page.waitForLoadState('networkidle');
   await page.evaluate(() => performance.clearResourceTimings());
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.locator('.mobile-shell')).toHaveAttribute('data-theme', 'porcelain', {
+  await expect(page.locator('.mobile-shell')).toHaveAttribute('data-theme', 'picnic', {
     timeout: 20_000,
   });
   await page.waitForLoadState('networkidle');

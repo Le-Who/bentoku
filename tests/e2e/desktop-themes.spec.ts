@@ -124,9 +124,17 @@ const screenPoint = (page: Page, x: number, y: number) =>
     { x, y },
   );
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }, testInfo) => {
+  if (testInfo.tags.includes('@cold-start')) return;
   await page.goto('/?seed=BENTO-E2E-0001&difficulty=gentle');
-  await page.evaluate(() => localStorage.clear());
+  // Keep these switching scenarios on an explicit saved look; cold starts use a fresh context below.
+  await page.evaluate(() => {
+    localStorage.clear();
+    localStorage.setItem(
+      'bentoku.save.v1',
+      JSON.stringify({ version: 1, settings: { visualTheme: 'porcelain' } }),
+    );
+  });
   await page.reload();
   await ready(page);
 });
@@ -137,6 +145,59 @@ test('desktop settings offers the three appearance themes', async ({ page }) => 
     await expect(dialog.getByRole('radio', { name: new RegExp(name) })).toBeVisible();
   }
 });
+
+for (const [width, height] of [
+  [320, 568],
+  [390, 844],
+  [1440, 900],
+] as const) {
+  test(
+    `fresh launch opens Picnic Postcards and keeps a later choice ${width}x${height}`,
+    { tag: '@cold-start' },
+    async ({ browser }, testInfo) => {
+      const mobile = width < 720;
+      const context = await browser.newContext({
+        viewport: { width, height },
+        isMobile: mobile,
+        hasTouch: mobile,
+        deviceScaleFactor: width === 390 ? 2 : 1,
+      });
+      const page = await context.newPage();
+      try {
+        await page.goto('/?seed=BENTO-E2E-0001&difficulty=gentle');
+        const surface = mobile ? page.locator('.mobile-shell') : page.locator('html');
+        const attribute = mobile ? 'data-theme' : 'data-desktop-theme';
+        await expect(surface).toHaveAttribute(attribute, 'picnic', { timeout: 20000 });
+        const open = async () => {
+          if (mobile) await page.getByRole('button', { name: 'Settings', exact: true }).click();
+          else await page.keyboard.press('KeyS');
+          return page.getByRole('dialog');
+        };
+        const dialog = await open();
+        await expect(dialog.getByRole('radio').first()).toHaveAccessibleName('Picnic Postcards');
+        await expect(dialog.getByRole('radio').first()).toBeChecked();
+        await expect(dialog.locator('.mobile-theme-description,.mobile-dialog-body')).toHaveCount(
+          0,
+        );
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(
+          true,
+        );
+        await page.screenshot({
+          path: testInfo.outputPath(`picnic-settings-${width}x${height}.png`),
+        });
+        await dialog.getByRole('radio', { name: 'Maple Counter', exact: true }).check();
+        await expect(surface).toHaveAttribute(attribute, 'maple', { timeout: 20000 });
+        await page.reload();
+        await expect(surface).toHaveAttribute(attribute, 'maple', { timeout: 20000 });
+        await expect(
+          (await open()).getByRole('radio', { name: 'Maple Counter', exact: true }),
+        ).toBeChecked();
+      } finally {
+        await context.close();
+      }
+    },
+  );
+}
 
 test('switching themes preserves the puzzle, placement, selected piece and undo', async ({
   page,

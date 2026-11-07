@@ -4,7 +4,14 @@ test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/?seed=BENTO-MAX1-60BE&difficulty=master');
-  await page.evaluate(() => localStorage.clear());
+  // Exercise an existing player's saved look independently of the first-launch default.
+  await page.evaluate(() => {
+    localStorage.clear();
+    localStorage.setItem(
+      'bentoku.save.v1',
+      JSON.stringify({ version: 1, settings: { visualTheme: 'porcelain' } }),
+    );
+  });
   await page.reload();
   await expect(page.getByRole('region', { name: 'Mobile Bentoku' })).toBeVisible();
 });
@@ -61,7 +68,7 @@ test('a saved theme that cannot load falls back to a complete usable look', asyn
     localStorage.setItem('bentoku.save.v1', JSON.stringify(save));
   });
   await page.reload();
-  await expect(page.locator('.mobile-shell')).toHaveAttribute('data-theme', 'porcelain', {
+  await expect(page.locator('.mobile-shell')).toHaveAttribute('data-theme', 'picnic', {
     timeout: 20000,
   });
   await page.locator('[data-piece-id="cat_rice"]').tap();
@@ -114,7 +121,7 @@ test('resizing during initial fallback does not restart or override the saved-th
     mapleRequests++;
     return mapleRequests === 1 ? route.abort() : route.continue();
   });
-  await page.route('**/themes/porcelain/board.webp', async (route) => {
+  await page.route('**/themes/picnic/board.webp', async (route) => {
     started();
     await held;
     await route.continue();
@@ -133,7 +140,7 @@ test('resizing during initial fallback does not restart or override the saved-th
     );
     expect(mapleRequests).toBe(1);
     release();
-    await expect(page.locator('.mobile-shell')).toHaveAttribute('data-theme', 'porcelain', {
+    await expect(page.locator('.mobile-shell')).toHaveAttribute('data-theme', 'picnic', {
       timeout: 20000,
     });
   } finally {

@@ -119,10 +119,7 @@ export class MobileDialog {
       preview.src = `assets/themes/${theme.id}/preview.webp`;
       preview.alt = '';
       const copy = element('span', 'mobile-theme-copy');
-      copy.append(
-        element('strong', 'mobile-theme-name', theme.name),
-        element('span', 'mobile-theme-description', theme.description),
-      );
+      copy.append(element('strong', 'mobile-theme-name', theme.name));
       card.append(input, preview, copy);
       picker.append(card);
     }

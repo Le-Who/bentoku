@@ -895,7 +895,7 @@ export class PuzzleScene extends Phaser.Scene {
     this.syncMobile();
     this.openModal(
       'Cozy settings',
-      'Tune the room to feel just right.',
+      '',
       [
         {
           label: `Effects: ${this.settings.sound ? 'on' : 'off'}`,
