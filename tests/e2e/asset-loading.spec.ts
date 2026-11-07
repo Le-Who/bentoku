@@ -26,6 +26,9 @@ async function ready(page: Page) {
 }
 
 async function openSettings(page: Page) {
+  await expect
+    .poll(() => page.evaluate(() => !document.activeElement?.closest('dialog:not([open])')))
+    .toBe(true);
   await page.keyboard.press('KeyS');
   const dialog = page.locator('.desktop-settings-dialog');
   await expect(dialog).toBeVisible();

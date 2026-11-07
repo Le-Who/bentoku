@@ -88,6 +88,9 @@ async function ready(page: Page) {
 }
 
 async function openSettings(page: Page) {
+  await expect
+    .poll(() => page.evaluate(() => !document.activeElement?.closest('dialog:not([open])')))
+    .toBe(true);
   await page.keyboard.press('KeyS');
   const dialog = page.locator('.desktop-settings-dialog');
   await expect(dialog).toBeVisible();
@@ -100,6 +103,9 @@ async function chooseTheme(page: Page, name: string, id: Theme) {
   await expect(page.locator('html')).toHaveAttribute('data-desktop-theme', id, { timeout: 20000 });
   await dialog.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(dialog).toBeHidden();
+  await expect
+    .poll(() => dialog.evaluate((node) => !node.contains(document.activeElement)))
+    .toBe(true);
 }
 
 const sceneState = (page: Page) =>
@@ -547,6 +553,9 @@ test('a pending desktop theme leaves Help open until the player closes it', asyn
     await requestStarted;
     await dialog.getByRole('button', { name: 'Close', exact: true }).click();
     await expect(dialog).toBeHidden();
+    await expect
+      .poll(() => dialog.evaluate((node) => !node.contains(document.activeElement)))
+      .toBe(true);
     await page.keyboard.press('KeyH');
     const helpOpen = () =>
       page.evaluate(() => {
